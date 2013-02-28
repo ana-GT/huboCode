@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:xacro="http://ros.org/wiki/xacro"
+  name="katana_300_6m180">
+
+  <include filename="$(find katana_description)/urdf/transmissions.urdf.xacro"/>
+  <include filename="$(find katana_description)/urdf/gazebo.urdf.xacro"/>
+
+  <property name="M_PI" value="3.1415926535897931" />
+
+  <!-- all values from the katana manual -->
+   <property name="path" value="meshes/" />
+  <property name="base_height" value="0.2015" />
+  <property name="link2_length" value="0.19" />
+  <property name="link3_length" value="0.139" />
+  <property name="link4_length" value="0.1523" />
+  <property name="link5_length" value="0.1505" />
+
+  <!-- All inertial values (mass, center of mass and inertia tensor) have been
+       calculated from the meshes using MeshLab -->
+  <!-- lower + upper joint limits have been calculated using the KNI's GetEncoderMinPos(), GetEncoderMaxPos();
+       the velocity limit has been calculated by vel_enc2rad(180); 180 encoders / 10ms is the maximum
+       speed limit for all joints, according to the Katana 4D documentation -->
+  <!-- the effort limits have been measured experimentally from the maximum effort the Gazebo controller 
+       uses in normal conditions -->
+ 
+  <link name="katana_base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="${path}katana_base_link.stl"/>
+      </geometry>
+
+      <material name="grey">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="${path}katana_base_link_convex.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.4047990875" />
+      <origin xyz="-0.000327 0.000908 0.058457"/>
+      <inertia ixx="0.003000703" ixy="0.000000864" ixz="-0.000011312" 
+        iyy="0.002974822" iyz="0.000036294" 
+        izz="0.001434739" />
+    </inertial>
+  </link>
+
+
+
+
+  <!-- **************************************************************** -->
+
+  <joint name="katana_base_frame_joint" type="fixed">
+    <parent link="katana_base_link"/>
+    <child link="katana_base_frame" />
+    <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="katana_base_frame">
+    <!-- This is the reference coordinate system of the arm (the KNI kinematics are specified
+         in this frame); there is no actual arm part attached to this link -->
+  </link>
+
+</robot>

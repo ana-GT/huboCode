@@ -1,0 +1,10 @@
+<world name="katana_world">
+  <!-- include the models here by referenceing their URDFs -->
+<!--  <include filename="katana_300_6m180_test.urdf" model_name="katana"/> -->
+  <include filename="katana_300_6m180.urdf" model_name="katana"/>
+
+  <entity model="katana" name="GolemKatana">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </entity>
+
+</world>

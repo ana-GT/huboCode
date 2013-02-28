@@ -1,0 +1,37 @@
+<sdf version='1.3'>
+  <model name='office_chair'>	
+    <link name='link'>		
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.000014 0.000001 0.000123 0.000000 0.000000 0.000000</pose>
+        <mass>7.977480</mass>
+        <inertia>
+          <ixx>0.085442</ixx>
+          <ixy>0.000277</ixy>
+          <ixz>0.002488</ixz>
+          <iyy>0.054158</iyy>
+          <iyz>-0.001207</iyz>
+          <izz>0.078330</izz>
+        </inertia>
+      </inertial>
+      <collision name='office_chair_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1.0 1.0 1.0</scale>
+            <uri>model://office_chair/meshes/office_chair.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='office_chair_vis'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1.0 1.0 1.0</scale>
+            <uri>model://office_chair/meshes/office_chair.stl</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

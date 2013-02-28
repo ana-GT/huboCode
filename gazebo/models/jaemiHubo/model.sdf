@@ -1,0 +1,2654 @@
+<sdf version='1.3'>
+  <model name='jaemiHubo'>
+        <sensor name="raysensor" type="ray">
+          <always_on>true</always_on>
+          <visualize>true</visualize>
+          <pose>0.5 0.0 0.0 0.0 0.0 0.0</pose>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>180</samples>
+                <min_angle>-1.57</min_angle>
+                <max_angle>1.57</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.0</min>
+              <max>30.0</max>
+            </range>
+          </ray>
+        </sensor>
+    <link name='Torso'>		
+      <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000014 0.000001 0.000123 0.000000 0.000000 0.000000</pose>
+        <mass>7.977480</mass>
+        <inertia>
+          <ixx>0.085442</ixx>
+          <ixy>0.000277</ixy>
+          <ixz>0.002488</ixz>
+          <iyy>0.054158</iyy>
+          <iyz>-0.001207</iyz>
+          <izz>0.078330</izz>
+        </inertia>
+      </inertial>
+      <collision name='Torso_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Torso_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Torso_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Torso_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <link name='HeadYaw'>
+      <pose>0.005495 0.000507 0.170924 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>0.000915</ixx>
+          <ixy>0.000172</ixy>
+          <ixz>-0.000000</ixz>
+          <iyy>0.000937</iyy>
+          <iyz>0.000000</iyz>
+          <izz>0.001288</izz>
+        </inertia>
+      </inertial>
+      <visual name='HeadYaw_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/HeadYaw_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='HY' type='revolute'>
+      <child>HeadYaw</child>
+      <parent>Torso</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Head'>
+      <pose>0.005495 0.000507 0.170924 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>0.000915</ixx>
+          <ixy>0.000172</ixy>
+          <ixz>-0.000000</ixz>
+          <iyy>0.000937</iyy>
+          <iyz>0.000000</iyz>
+          <izz>0.001288</izz>
+        </inertia>
+      </inertial>
+      <collision name='Head_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Head_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Head_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Head_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='HP' type='revolute'>
+      <child>Head</child>
+      <parent>HeadYaw</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Hip'>
+      <pose>0.005495 0.000507 -0.142576 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.000053 -0.000000 -0.000199 0.000000 0.000000 0.000000</pose>
+        <mass>4.456340</mass>
+        <inertia>
+          <ixx>0.024636</ixx>
+          <ixy>0.000398</ixy>
+          <ixz>-0.000175</ixz>
+          <iyy>0.011335</iyy>
+          <iyz>-0.000010</iyz>
+          <izz>0.029189</izz>
+        </inertia>
+      </inertial>
+      <collision name='Hip_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Hip_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Hip_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Hip_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='TY' type='revolute'>
+      <child>Hip</child>
+      <parent>Torso</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftHip'>
+      <pose>0.005495 0.089007 -0.229029 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.483119</mass>
+        <inertia>
+          <ixx>0.000863</ixx>
+          <ixy>0.000001</ixy>
+          <ixz>0.000043</ixz>
+          <iyy>0.002030</iyy>
+          <iyz>0.000001</iyz>
+          <izz>0.001473</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftHip_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftHip_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftHip_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftHip_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LHY' type='revolute'>
+      <child>leftHip</child>
+      <parent>Hip</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-0.872665</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftHipPitchRoll'>
+      <pose>0.005495 0.089007 -0.320029 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.006790 0.000064 -0.053769 0.000000 0.000000 0.000000</pose>
+        <mass>2.644640</mass>
+        <inertia>
+          <ixx>0.004386</ixx>
+          <ixy>0.000224</ixy>
+          <ixz>-0.000447</ixz>
+          <iyy>0.004633</iyy>
+          <iyz>-0.000378</iyz>
+          <izz>0.004399</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftHipPitchRoll_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftHipPitchRoll_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftHipPitchRoll_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftHipPitchRoll_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LHR' type='revolute'>
+      <child>leftHipPitchRoll</child>
+      <parent>leftHip</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftKneeUpper'>
+      <pose>0.005495 0.035007 -0.320029 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.013849 0.010902 -0.011973 0.000000 0.000000 0.000000</pose>
+        <mass>3.098800</mass>
+        <inertia>
+          <ixx>0.036845</ixx>
+          <ixy>0.000256</ixy>
+          <ixz>-0.000625</ixz>
+          <iyy>0.034557</iyy>
+          <iyz>0.000952</iyz>
+          <izz>0.009238</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftKneeUpper_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftKneeUpper_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftKneeUpper_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftKneeUpper_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LHP' type='revolute'>
+      <child>leftKneeUpper</child>
+      <parent>leftHipPitchRoll</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftKneeLower'>
+      <pose>0.003820 0.110006 -0.620571 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.019868 0.058794 -0.188775 0.000000 0.000000 0.000000</pose>
+        <mass>1.559600</mass>
+        <inertia>
+          <ixx>0.022012</ixx>
+          <ixy>0.000118</ixy>
+          <ixz>-0.000868</ixz>
+          <iyy>0.020299</iyy>
+          <iyz>0.002037</iyz>
+          <izz>0.005045</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftKneeLower_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftKneeLower_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftKneeLower_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftKneeLower_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LKP' type='revolute'>
+      <child>leftKneeLower</child>
+      <parent>leftKneeUpper</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.034907</lower>
+          <upper>2.094400</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftAnklePitch'>
+      <pose>0.003865 0.134761 -0.920513 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.018121 -0.013915 -0.152406 0.000000 0.000000 0.000000</pose>
+        <mass>1.674920</mass>
+        <inertia>
+          <ixx>0.002342</ixx>
+          <ixy>0.000115</ixy>
+          <ixz>0.000316</ixz>
+          <iyy>0.003020</iyy>
+          <iyz>0.000107</iyz>
+          <izz>0.002846</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftAnklePitch_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftAnklePitch_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftAnklePitch_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftAnklePitch_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LAP' type='revolute'>
+      <child>leftAnklePitch</child>
+      <parent>leftKneeLower</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-1.745330</lower>
+          <upper>1.745330</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftFoot'>
+      <pose>0.075109 0.088261 -0.920529 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.019151 -0.042958 0.009381 0.000000 0.000000 0.000000</pose>
+        <mass>0.525134</mass>
+        <inertia>
+          <ixx>0.001300</ixx>
+          <ixy>-0.000004</ixy>
+          <ixz>-0.000096</ixz>
+          <iyy>0.002702</iyy>
+          <iyz>0.000027</iyz>
+          <izz>0.002754</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftFoot_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftFoot_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftFoot_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftFoot_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LAR' type='revolute'>
+      <child>leftFoot</child>
+      <parent>leftAnklePitch</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightHip'>
+      <pose>0.005495 -0.087993 -0.229029 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.483119</mass>
+        <inertia>
+          <ixx>0.000863</ixx>
+          <ixy>-0.000001</ixy>
+          <ixz>0.000043</ixz>
+          <iyy>0.002030</iyy>
+          <iyz>-0.000001</iyz>
+          <izz>0.001473</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightHip_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightHip_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightHip_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightHip_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RHY' type='revolute'>
+      <child>rightHip</child>
+      <parent>Hip</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>0.872665</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightHipPitchRoll'>
+      <pose>0.005495 -0.087993 -0.320029 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.006790 -0.000064 -0.053769 0.000000 0.000000 0.000000</pose>
+        <mass>2.644640</mass>
+        <inertia>
+          <ixx>0.004386</ixx>
+          <ixy>-0.000224</ixy>
+          <ixz>-0.000447</ixz>
+          <iyy>0.004633</iyy>
+          <iyz>0.000378</iyz>
+          <izz>0.004399</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightHipPitchRoll_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightHipPitchRoll_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightHipPitchRoll_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightHipPitchRoll_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RHR' type='revolute'>
+      <child>rightHipPitchRoll</child>
+      <parent>rightHip</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightKneeUpper'>
+      <pose>0.005495 -0.033993 -0.320029 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.013849 -0.010902 -0.011973 0.000000 0.000000 0.000000</pose>
+        <mass>3.098800</mass>
+        <inertia>
+          <ixx>0.036845</ixx>
+          <ixy>-0.000256</ixy>
+          <ixz>-0.000625</ixz>
+          <iyy>0.034557</iyy>
+          <iyz>-0.000952</iyz>
+          <izz>0.009238</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightKneeUpper_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightKneeUpper_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightKneeUpper_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightKneeUpper_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RHP' type='revolute'>
+      <child>rightKneeUpper</child>
+      <parent>rightHipPitchRoll</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-1.570800</lower>
+          <upper>1.570800</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightKneeLower'>
+      <pose>0.003820 -0.108992 -0.620571 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.019868 -0.058794 -0.188775 0.000000 0.000000 0.000000</pose>
+        <mass>1.559600</mass>
+        <inertia>
+          <ixx>0.022012</ixx>
+          <ixy>-0.000118</ixy>
+          <ixz>-0.000868</ixz>
+          <iyy>0.020299</iyy>
+          <iyz>-0.002037</iyz>
+          <izz>0.005045</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightKneeLower_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightKneeLower_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightKneeLower_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightKneeLower_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RKP' type='revolute'>
+      <child>rightKneeLower</child>
+      <parent>rightKneeUpper</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.034907</lower>
+          <upper>2.094400</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightAnklePitch'>
+      <pose>0.003865 -0.133747 -0.920513 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.018121 0.013915 -0.152406 0.000000 0.000000 0.000000</pose>
+        <mass>1.674920</mass>
+        <inertia>
+          <ixx>0.002342</ixx>
+          <ixy>-0.000115</ixy>
+          <ixz>0.000316</ixz>
+          <iyy>0.003020</iyy>
+          <iyz>-0.000107</iyz>
+          <izz>0.002846</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightAnklePitch_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightAnklePitch_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightAnklePitch_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightAnklePitch_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RAP' type='revolute'>
+      <child>rightAnklePitch</child>
+      <parent>rightKneeLower</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-1.745330</lower>
+          <upper>1.745330</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightFoot'>
+      <pose>0.075109 -0.087247 -0.920529 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.019151 0.042958 0.009381 0.000000 0.000000 0.000000</pose>
+        <mass>0.525134</mass>
+        <inertia>
+          <ixx>0.001300</ixx>
+          <ixy>0.000004</ixy>
+          <ixz>-0.000096</ixz>
+          <iyy>0.002702</iyy>
+          <iyz>-0.000027</iyz>
+          <izz>0.002754</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightFoot_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightFoot_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightFoot_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightFoot_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RAR' type='revolute'>
+      <child>rightFoot</child>
+      <parent>rightAnklePitch</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_LSP'>
+      <pose>0.005495 0.143007 0.048924 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.696197</mass>
+        <inertia>
+          <ixx>0.000915</ixx>
+          <ixy>-0.000172</ixy>
+          <ixz>-0.000000</ixz>
+          <iyy>0.000937</iyy>
+          <iyz>-0.000000</iyz>
+          <izz>0.001288</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_LSP_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LSP_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_LSP_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LSP_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LSP' type='revolute'>
+      <child>Body_LSP</child>
+      <parent>Torso</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-3.141590</lower>
+          <upper>3.141590</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_LSR'>
+      <pose>0.030495 0.215007 0.048924 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.017376 0.056463 -0.000002 0.000000 0.000000 0.000000</pose>
+        <mass>0.348180</mass>
+        <inertia>
+          <ixx>0.000273</ixx>
+          <ixy>0.000008</ixy>
+          <ixz>0.000010</ixz>
+          <iyy>0.000248</iyy>
+          <iyz>-0.000011</iyz>
+          <izz>0.000217</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_LSR_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LSR_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_LSR_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LSR_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LSR' type='revolute'>
+      <child>Body_LSR</child>
+      <parent>Body_LSP</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.174533</lower>
+          <upper>3.141590</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_LSY'>
+      <pose>0.003595 0.215007 0.024424 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.032544 -0.002402 -0.004361 0.000000 0.000000 0.000000</pose>
+        <mass>1.407490</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_LSY_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LSY_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_LSY_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LSY_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LSY' type='revolute'>
+      <child>Body_LSY</child>
+      <parent>Body_LSR</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-2.740170</lower>
+          <upper>2.740170</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_LEP'>
+      <pose>0.025874 0.226507 -0.130017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.007506 -0.001889 -0.089713 0.000000 0.000000 0.000000</pose>
+        <mass>0.090349</mass>
+        <inertia>
+          <ixx>0.000067</ixx>
+          <ixy>-0.000003</ixy>
+          <ixz>-0.000013</ixz>
+          <iyy>0.000075</iyy>
+          <iyz>-0.000005</iyz>
+          <izz>0.000078</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_LEP_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LEP_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_LEP_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LEP_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LEP' type='revolute'>
+      <child>Body_LEP</child>
+      <parent>Body_LSY</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-2.513270</lower>
+          <upper>0.349066</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_LWY'>
+      <pose>0.003873 0.215007 -0.171017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.013771 -0.006562 -0.019735 0.000000 0.000000 0.000000</pose>
+        <mass>0.278224</mass>
+        <inertia>
+          <ixx>0.000458</ixx>
+          <ixy>-0.000000</ixy>
+          <ixz>-0.000016</ixz>
+          <iyy>0.000450</iyy>
+          <iyz>0.000000</iyz>
+          <izz>0.000201</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_LWY_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LWY_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_LWY_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_LWY_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LWY' type='revolute'>
+      <child>Body_LWY</child>
+      <parent>Body_LEP</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-2.792530</lower>
+          <upper>2.792530</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftUJoint'>
+      <pose>0.003873 0.215007 -0.293017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.003373 -0.000033 -0.039374 0.000000 0.000000 0.000000</pose>
+        <mass>0.003017</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <collision name='leftUJoint_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftUJoint_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='leftUJoint_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftUJoint_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LWR' type='revolute'>
+      <child>leftUJoint</child>
+      <parent>Body_LWY</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftPalmDummy'>
+      <pose>0.003873 0.215007 -0.293017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.000116 0.002856 -0.056659 0.000000 0.000000 0.000000</pose>
+        <mass>0.174998</mass>
+        <inertia>
+          <ixx>0.001756</ixx>
+          <ixy>0.000183</ixy>
+          <ixz>-0.000076</ixz>
+          <iyy>0.001802</iyy>
+          <iyz>0.000092</iyz>
+          <izz>0.001466</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftPalmDummy_vis_leftPalm'>
+        <pose>-0.000123 0.003029 -0.060093 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftPalm_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='LWP' type='revolute'>
+      <child>leftPalmDummy</child>
+      <parent>leftUJoint</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftIndexProximal'>
+      <pose>0.022135 0.248205 -0.357940 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftIndexProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftIndexProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='leftIndexKnuckle1' type='revolute'>
+      <child>leftIndexProximal</child>
+      <parent>leftPalmDummy</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftIndexMedial'>
+      <pose>0.000478 0.258548 -0.380567 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 -0.008000 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftIndexMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftIndexMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle2' type='revolute'>
+      <child>leftIndexMedial</child>
+      <parent>leftIndexProximal</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftIndexDistal'>
+      <pose>-0.010522 0.269548 -0.396123 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftIndexDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftIndexDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle3' type='revolute'>
+      <child>leftIndexDistal</child>
+      <parent>leftIndexMedial</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftMiddleProximal'>
+      <pose>0.022135 0.248204 -0.357940 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftMiddleProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftMiddleProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='leftMiddleKnuckle1' type='revolute'>
+      <child>leftMiddleProximal</child>
+      <parent>leftPalmDummy</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftMiddleMedial'>
+      <pose>-0.012933 0.245137 -0.380567 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 -0.026966 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftMiddleMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftMiddleMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle243' type='revolute'>
+      <child>leftMiddleMedial</child>
+      <parent>leftMiddleProximal</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftMiddleDistal'>
+      <pose>-0.023933 0.256137 -0.396123 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftMiddleDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftMiddleDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle344' type='revolute'>
+      <child>leftMiddleDistal</child>
+      <parent>leftMiddleMedial</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftPinkyProximal'>
+      <pose>0.022135 0.248204 -0.357940 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftPinkyProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftPinkyProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='leftPinkyKnuckle1' type='revolute'>
+      <child>leftPinkyProximal</child>
+      <parent>leftPalmDummy</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftPinkyMedial'>
+      <pose>-0.039832 0.218238 -0.380567 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 -0.065006 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftPinkyMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftPinkyMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle237' type='revolute'>
+      <child>leftPinkyMedial</child>
+      <parent>leftPinkyProximal</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftPinkyDistal'>
+      <pose>-0.050832 0.229238 -0.396123 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftPinkyDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftPinkyDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle338' type='revolute'>
+      <child>leftPinkyDistal</child>
+      <parent>leftPinkyMedial</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftRingProximal'>
+      <pose>0.022135 0.248204 -0.357940 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftRingProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftRingProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='leftRingKnuckle1' type='revolute'>
+      <child>leftRingProximal</child>
+      <parent>leftPalmDummy</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftRingMedial'>
+      <pose>-0.026395 0.231674 -0.380567 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 -0.046004 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftRingMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftRingMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle240' type='revolute'>
+      <child>leftRingMedial</child>
+      <parent>leftRingProximal</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftRingDistal'>
+      <pose>-0.037395 0.242674 -0.396123 1.570800 0.785398 2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftRingDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftRingDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle341' type='revolute'>
+      <child>leftRingDistal</child>
+      <parent>leftRingMedial</parent>
+      <axis>
+        <xyz>-0.707112 -0.707102 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftThumbProximal'>
+      <pose>0.024904 0.211476 -0.329999 -1.570800 -0.785398 -0.785398</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftThumbProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftThumbProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='leftThumbKnuckle1' type='revolute'>
+      <child>leftThumbProximal</child>
+      <parent>leftPalmDummy</parent>
+      <axis>
+        <xyz>-0.707109 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftThumbMedial'>
+      <pose>0.046561 0.201133 -0.307372 -1.570800 -0.785398 -0.785398</pose>
+      <inertial>
+        <pose>0.016000 0.000000 0.008000 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftThumbMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftThumbMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle234' type='revolute'>
+      <child>leftThumbMedial</child>
+      <parent>leftThumbProximal</parent>
+      <axis>
+        <xyz>-0.707109 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='leftThumbDistal'>
+      <pose>0.057561 0.190133 -0.291816 -1.570800 -0.785398 -0.785398</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='leftThumbDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/leftThumbDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle335' type='revolute'>
+      <child>leftThumbDistal</child>
+      <parent>leftThumbMedial</parent>
+      <axis>
+        <xyz>-0.707109 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_RSP'>
+      <pose>0.005495 -0.141993 0.048924 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.696197</mass>
+        <inertia>
+          <ixx>0.000915</ixx>
+          <ixy>0.000172</ixy>
+          <ixz>-0.000000</ixz>
+          <iyy>0.000937</iyy>
+          <iyz>0.000000</iyz>
+          <izz>0.001288</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_RSP_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RSP_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_RSP_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RSP_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RSP' type='revolute'>
+      <child>Body_RSP</child>
+      <parent>Torso</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-2.617990</lower>
+          <upper>2.617990</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_RSR'>
+      <pose>0.030495 -0.213993 0.048924 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.017376 -0.056463 -0.000002 0.000000 0.000000 0.000000</pose>
+        <mass>0.348180</mass>
+        <inertia>
+          <ixx>0.000273</ixx>
+          <ixy>-0.000008</ixy>
+          <ixz>0.000010</ixz>
+          <iyy>0.000248</iyy>
+          <iyz>0.000011</iyz>
+          <izz>0.000217</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_RSR_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RSR_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_RSR_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RSR_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RSR' type='revolute'>
+      <child>Body_RSR</child>
+      <parent>Body_RSP</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-3.141590</lower>
+          <upper>0.174533</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_RSY'>
+      <pose>0.003595 -0.213993 0.024424 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.032544 0.002402 -0.004361 0.000000 0.000000 0.000000</pose>
+        <mass>1.407490</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_RSY_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RSY_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_RSY_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RSY_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RSY' type='revolute'>
+      <child>Body_RSY</child>
+      <parent>Body_RSR</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-2.740170</lower>
+          <upper>2.740170</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_REP'>
+      <pose>0.025874 -0.225493 -0.130017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>0.007506 0.001889 -0.089713 0.000000 0.000000 0.000000</pose>
+        <mass>0.090349</mass>
+        <inertia>
+          <ixx>0.000067</ixx>
+          <ixy>0.000003</ixy>
+          <ixz>-0.000013</ixz>
+          <iyy>0.000075</iyy>
+          <iyz>0.000005</iyz>
+          <izz>0.000078</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_REP_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_REP_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_REP_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_REP_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='REP' type='revolute'>
+      <child>Body_REP</child>
+      <parent>Body_RSY</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-2.513270</lower>
+          <upper>0.349066</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='Body_RWY'>
+      <pose>0.003873 -0.213993 -0.171017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.013771 0.006562 -0.019735 0.000000 0.000000 0.000000</pose>
+        <mass>0.278224</mass>
+        <inertia>
+          <ixx>0.000458</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>-0.000016</ixz>
+          <iyy>0.000450</iyy>
+          <iyz>-0.000000</iyz>
+          <izz>0.000201</izz>
+        </inertia>
+      </inertial>
+      <collision name='Body_RWY_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RWY_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='Body_RWY_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/Body_RWY_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RWY' type='revolute'>
+      <child>Body_RWY</child>
+      <parent>Body_REP</parent>
+      <axis>
+        <xyz>0.000000 0.000000 1.000000</xyz>
+        <limit>
+          <lower>-2.792530</lower>
+          <upper>2.792530</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightUJoint'>
+      <pose>0.003873 -0.213993 -0.293017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.003373 0.000033 -0.039374 0.000000 0.000000 0.000000</pose>
+        <mass>0.003017</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <collision name='rightUJoint_collision'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightUJoint_col.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='rightUJoint_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightUJoint_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RWR' type='revolute'>
+      <child>rightUJoint</child>
+      <parent>Body_RWY</parent>
+      <axis>
+        <xyz>1.000000 0.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightPalmDummy'>
+      <pose>0.003873 -0.213993 -0.293017 0.000000 0.000000 0.000000</pose>
+      <inertial>
+        <pose>-0.000116 -0.002856 -0.056659 0.000000 0.000000 0.000000</pose>
+        <mass>0.174998</mass>
+        <inertia>
+          <ixx>0.001756</ixx>
+          <ixy>0.000183</ixy>
+          <ixz>-0.000076</ixz>
+          <iyy>0.001802</iyy>
+          <iyz>0.000032</iyz>
+          <izz>0.001466</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightPalmDummy_vis_rightPalm'>
+        <pose>-0.000123 -0.003029 -0.060093 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightPalm_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='RWP' type='revolute'>
+      <child>rightPalmDummy</child>
+      <parent>rightUJoint</parent>
+      <axis>
+        <xyz>0.000000 1.000000 0.000000</xyz>
+        <limit>
+          <lower>-0.523599</lower>
+          <upper>0.523599</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightIndexProximal'>
+      <pose>0.022135 -0.247191 -0.357940 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightIndexProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightIndexProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='rightIndexKnuckle1' type='revolute'>
+      <child>rightIndexProximal</child>
+      <parent>rightPalmDummy</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightIndexMedial'>
+      <pose>0.000478 -0.257534 -0.380567 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 0.008000 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightIndexMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightIndexMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle222' type='revolute'>
+      <child>rightIndexMedial</child>
+      <parent>rightIndexProximal</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightIndexDistal'>
+      <pose>-0.010522 -0.268534 -0.396123 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightIndexDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightIndexDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle323' type='revolute'>
+      <child>rightIndexDistal</child>
+      <parent>rightIndexMedial</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightMiddleProximal'>
+      <pose>0.022135 -0.247191 -0.357940 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightMiddleProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightMiddleProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='rightMiddleKnuckle1' type='revolute'>
+      <child>rightMiddleProximal</child>
+      <parent>rightPalmDummy</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightMiddleMedial'>
+      <pose>-0.012933 -0.244123 -0.380567 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 0.026966 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightMiddleMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightMiddleMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle219' type='revolute'>
+      <child>rightMiddleMedial</child>
+      <parent>rightMiddleProximal</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightMiddleDistal'>
+      <pose>-0.023933 -0.255123 -0.396123 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightMiddleDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightMiddleDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle320' type='revolute'>
+      <child>rightMiddleDistal</child>
+      <parent>rightMiddleMedial</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightPinkyProximal'>
+      <pose>0.022135 -0.247190 -0.357940 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightPinkyProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightPinkyProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='rightPinkyKnuckle1' type='revolute'>
+      <child>rightPinkyProximal</child>
+      <parent>rightPalmDummy</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightPinkyMedial'>
+      <pose>-0.039832 -0.217224 -0.380567 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 0.065006 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightPinkyMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightPinkyMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle213' type='revolute'>
+      <child>rightPinkyMedial</child>
+      <parent>rightPinkyProximal</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightPinkyDistal'>
+      <pose>-0.050832 -0.228224 -0.396123 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightPinkyDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightPinkyDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle314' type='revolute'>
+      <child>rightPinkyDistal</child>
+      <parent>rightPinkyMedial</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightRingProximal'>
+      <pose>0.022135 -0.247190 -0.357940 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightRingProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightRingProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='rightRingKnuckle1' type='revolute'>
+      <child>rightRingProximal</child>
+      <parent>rightPalmDummy</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightRingMedial'>
+      <pose>-0.026395 -0.230660 -0.380567 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.016000 0.000000 0.046004 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightRingMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightRingMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle216' type='revolute'>
+      <child>rightRingMedial</child>
+      <parent>rightRingProximal</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightRingDistal'>
+      <pose>-0.037395 -0.241661 -0.396123 1.570800 0.785398 -2.356190</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightRingDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightRingDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle317' type='revolute'>
+      <child>rightRingDistal</child>
+      <parent>rightRingMedial</parent>
+      <axis>
+        <xyz>0.707108 -0.707105 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightThumbProximal'>
+      <pose>0.024904 -0.217524 -0.329999 -1.570800 -0.785398 0.785398</pose>
+      <inertial>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.012000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightThumbProximal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightThumbProximal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='rightThumbKnuckle1' type='revolute'>
+      <child>rightThumbProximal</child>
+      <parent>rightPalmDummy</parent>
+      <axis>
+        <xyz>0.707105 -0.707109 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightThumbMedial'>
+      <pose>0.046561 -0.195867 -0.307372 -1.570800 -0.785398 0.785398</pose>
+      <inertial>
+        <pose>0.021657 0.005657 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.006000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightThumbMedial_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightThumbMedial_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle210' type='revolute'>
+      <child>rightThumbMedial</child>
+      <parent>rightThumbProximal</parent>
+      <axis>
+        <xyz>0.707105 -0.707109 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+    <link name='rightThumbDistal'>
+      <pose>0.057561 -0.184867 -0.291816 -1.570800 -0.785398 0.785398</pose>
+      <inertial>
+        <pose>0.011000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <mass>0.010000</mass>
+        <inertia>
+          <ixx>1.000000</ixx>
+          <ixy>0.000000</ixy>
+          <ixz>0.000000</ixz>
+          <iyy>1.000000</iyy>
+          <iyz>0.000000</iyz>
+          <izz>1.000000</izz>
+        </inertia>
+      </inertial>
+      <visual name='rightThumbDistal_vis'>
+        <pose>0.000000 0.000000 0.000000 0.000000 0.000000 0.000000</pose>
+        <geometry>
+          <mesh>
+            <scale>1.000000 1.000000 1.000000</scale>
+            <uri>model://jaemiHuboInertia/dae/rightThumbDistal_vis.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+    </link>
+    <joint name='Knuckle311' type='revolute'>
+      <child>rightThumbDistal</child>
+      <parent>rightThumbMedial</parent>
+      <axis>
+        <xyz>0.707105 -0.707109 0.000003</xyz>
+        <limit>
+          <lower>-3.140000</lower>
+          <upper>3.140000</upper>
+        </limit>
+        <dynamics/>
+      </axis>
+    </joint>
+	<plugin name="animate_joints" filename="libanimate_joints.so" />
+  </model>
+</sdf>
