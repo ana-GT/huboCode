@@ -12,7 +12,7 @@ namespace gazebo
       this->model_ = _model;
       // initialize a PID class
       this->target_position_ = 1.8;
-      this->pid.Init(2, 0, 1, 0, 0, 5, -5);
+      this->pid.Init(100, 0, 1, 0, 0, 100, -100);
       this->pid.SetCmd(this->target_position_);
       this->joint_ = this->model_->GetJoint("my_joint");
       this->last_update_time_ = this->model_->GetWorld()->GetSimTime();
@@ -28,7 +28,7 @@ namespace gazebo
                    - this->last_update_time_.Double();
       this->pid.Update(error, dt);
       // Change from torque to velocity, see what happens
-      this->joint_->SetVelocity(0, this->pid.GetCmd());
+      this->joint_->SetForce(0, this->pid.GetCmd());
       this->last_update_time_ = current_time;
       gzdbg << "error [" << error
             << "] cmd [" << this->pid.GetCmd() << "]\n";

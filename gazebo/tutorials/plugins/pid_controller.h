@@ -2,13 +2,11 @@
  * @file pid_controller.h
  */
 
-#ifndef __PID_CONTROLLER_HUBOLEG_H__
-#define __PID_CONTROLLER_HUBOLEG_H__
+#ifndef __PID_CONTROLLER_H__
+#define __PID_CONTROLLER_H__
 
 
 #include <gazebo/common/Time.hh>
-
-using namespace gazebo;
 
 /**
  * @class pid_controller
@@ -52,7 +50,7 @@ class pid_controller {
     this->Imin = _pid.Imin;
     this->outputMax = _pid.outputMax;
 
-    this->reset();
+    this->Reset();
     return *this;    
   } // end operator
 

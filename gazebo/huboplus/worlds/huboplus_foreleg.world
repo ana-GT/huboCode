@@ -18,11 +18,10 @@
 
 		<!-- A robot -->
 		<include>
-			<uri>model://huboplus_lowerBody</uri>
-			<name>huboplus_lowerBody</name>
-			<!-- <pose>0 0 1.05 0 0 0.5</pose> -->
-			<pose>0 0 0.83 0 0 0.0</pose> 
-			<plugin name="lowerBody_jointControl" filename="liblowerBody_jointControl.so" />	
+			<uri>model://huboplus_foreleg</uri>
+			<name>huboplus_foreleg</name>
+			<pose>0 0 1.0 0 0 0.0</pose> 
+			<plugin name="foreleg" filename="libforeleg.so" />	
 		</include>
 
 	</world>	

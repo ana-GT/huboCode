@@ -12,18 +12,18 @@
  * @function pid_controller
  * @brief
  */
-pid_controller::pid_controller( double _Kp, double _Ki, double _Kd,
-				 double _Imax, double _Imin,
-				 double _outputMax, double _outputMin ) 
+pid::controller::pid_controller( double _Kp = 0.0, double _Ki = 0.0, double _Kd = 0.0,
+				 double _Imax = 0.0, double _Imin = 0.0,
+				 double _outputMax = 0.0, double _outputMin = 0.0 ) 
   : Kp(_Kp), Ki(_Ki), Kd(_Kd), Imax(_Imax), Imin(_Imin), outputMax(_outputMax), outputMin(_outputMin) {
-  this->reset();
+  this->Reset();
 }
 
 /**
  * @function pid_controller
  * @brief
  */
-pid_controller::~pid_controller() {
+pid::controller::~pid_controller() {
 
 }
 
@@ -31,9 +31,9 @@ pid_controller::~pid_controller() {
  * @function pid_controller
  * @brief
  */
-void pid_controller::init( double _Kp, double _Ki, double _Kd,
-			    double _Imax, double _Imin,
-			    double _outputMax, double _outputMin ) {
+void pid::controller::init( double _Kp = 0.0, double _Ki = 0.0, double _Kd = 0.0,
+			    double _Imax = 0.0, double _Imin = 0.0,
+			    double _outputMax = 0.0, double _outputMin = 0.0 ) {
 
   this->Kp = _Kp;
   this->Ki = _Ki;
@@ -43,14 +43,14 @@ void pid_controller::init( double _Kp, double _Ki, double _Kd,
   this->outputMax = _outputMax;
   this->outputMin = _outputMin;
 
-  this->reset();
+  this->Reset();
 }
 
 /**
  * @function pid_controller
  * @brief
  */
-void pid_controller::setPGain( double _Kp ) {
+void pid::controller::setPGain( double _Kp ) {
   Kp = _Kp;
 }
 
@@ -58,7 +58,7 @@ void pid_controller::setPGain( double _Kp ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setIGain( double _Ki ) {
+void pid::controller::setIGain( double _Ki ) {
   Ki = _Ki;
 }
 
@@ -66,7 +66,7 @@ void pid_controller::setIGain( double _Ki ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setDGain( double _Kd ) {
+void pid::controller::setDGain( double _Kd ) {
   Kd = _Kd;
 }
 
@@ -74,7 +74,7 @@ void pid_controller::setDGain( double _Kd ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setIMax( double _Imax ) {
+void pid::controller::setIMax( double _Imax ) {
   Imax = _Imax;
 }
 
@@ -82,7 +82,7 @@ void pid_controller::setIMax( double _Imax ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setIMin( double _Imin ) {
+void pid::controller::setIMin( double _Imin ) {
   Imin = _Imin;
 }
 
@@ -90,7 +90,7 @@ void pid_controller::setIMin( double _Imin ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setOutputMax( double _outputMax ) {
+void pid::controller::setOutputMax( double _outputMax ) {
   outputMax = _outputMax;
 }
 
@@ -98,7 +98,7 @@ void pid_controller::setOutputMax( double _outputMax ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setOutputMin( double _outputMin ) {
+void pid::controller::setOutputMin( double _outputMin ) {
   outputMin = _outputMin;
 }
 
@@ -106,13 +106,13 @@ void pid_controller::setOutputMin( double _outputMin ) {
  * @function pid_controller
  * @brief
  */
-double pid_controller::update( double _Ep, common::Time _dt ) {
+double pid::controller::update( double _Ep, common::Time _dt ) {
  
   double Xp; double Xd; double Xi;
 
   this->Ep = _Ep;
   
-  if( _dt == common::Time(0,0) || math::isnan(_Ep) || isinf(_Ep) ) {
+  if( _dt == common::Time(0,0) || math::isnan(_error) || isinf(_error) ) {
     return 0.0;
   }
 
@@ -126,12 +126,12 @@ double pid_controller::update( double _Ep, common::Time _dt ) {
   Xi = this->Ki*this->Ei;
 
   // Limit Xi so that the limit is meaningful in the control signal
-  if( Xi > this->Imax ) {
-    Xi = this->Imax;
+  if( Xi > this->iMax ) {
+    Xi = this->iMax;
     this->Ei = Xi / this->Ki;
   }
-  else if( Xi < this->Imin ) {
-    Xi = this->Imin;
+  else if( Xi < this->iMin ) {
+    Xi = this->iMin;
     this->Ei = Xi / this->Ki;
   }
 
@@ -162,7 +162,7 @@ double pid_controller::update( double _Ep, common::Time _dt ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::setOutput( double _output ) {
+void pid::controller::setOutput( double _output ) {
   this->output = _output;
 }
 
@@ -170,7 +170,7 @@ void pid_controller::setOutput( double _output ) {
  * @function pid_controller
  * @brief
  */
-double pid_controller::getOutput() {
+double pid::controller::getOutput() {
   return this->output;
 }
 
@@ -178,7 +178,7 @@ double pid_controller::getOutput() {
  * @function pid_controller
  * @brief
  */
-void pid_controller::getErrors( double &_Ep, double &_Ei, double &_Ed ) {
+void pid::controller::getErrors( double &_Ep, double &_Ei, double &_Ed ) {
   _Ep = this->Ep;
   _Ei = this->Ei;
   _Ed = this->Ed;
@@ -188,7 +188,7 @@ void pid_controller::getErrors( double &_Ep, double &_Ei, double &_Ed ) {
  * @function pid_controller
  * @brief
  */
-void pid_controller::reset() {
+void pid::controller::reset() {
 
   this->Ep_prev = 0.0;
   this->Ep = 0.0;

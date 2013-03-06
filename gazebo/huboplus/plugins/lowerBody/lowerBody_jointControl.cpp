@@ -46,22 +46,32 @@ namespace gazebo {
    */
   void lowerBody_jointControl::SetInitialPose() {   
 
+    printf("Set initial pose \n");
     std::map<std::string, double> joint_position_map;
     
-    joint_position_map["huboplus::LHP"] = -10*3.1416/180.0;
-    joint_position_map["huboplus::RHP"] = -10*3.1416/180.0;
-    joint_position_map["huboplus::LHY"] = 0.0;
-    joint_position_map["huboplus::RHY"] = 0.0;
-    joint_position_map["huboplus::LHR"] = 0.3;
-    joint_position_map["huboplus::RHR"] = -0.3;
 
-    joint_position_map["huboplus::LKP"] =  20*3.1416/180.0;
-    joint_position_map["huboplus::RKP"] =  20*3.1416/180.0;
+    // First simplest rule for flat surfaces: 
+    // |LHP| + |LAP| = |LKP|
+    joint_position_map["huboplus_lowerBody::LHP"] = -45*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::RHP"] = -45*3.1416/180.0;
 
-    joint_position_map["huboplus::LAP"] = -10*3.1416/180.0;
-    joint_position_map["huboplus::RAP"] = -10*3.1416/180.0;
-    joint_position_map["huboplus::LAR"] = 0.3;
-    joint_position_map["huboplus::RAR"] = 0.3;
+    joint_position_map["huboplus_lowerBody::LKP"] =  90*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::RKP"] =  90*3.1416/180.0;
+
+    joint_position_map["huboplus_lowerBody::LAP"] = -45*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::RAP"] = -45*3.1416/180.0;
+
+
+    // Keep the rest 0 by now
+    joint_position_map["huboplus_lowerBody::LHY"] = 0.0;
+    joint_position_map["huboplus_lowerBody::RHY"] = 0.0;
+
+    joint_position_map["huboplus_lowerBody::LHR"] = 0.0;
+    joint_position_map["huboplus_lowerBody::RHR"] = 0.0;
+
+    joint_position_map["huboplus_lowerBody::LAR"] = 0.0;
+    joint_position_map["huboplus_lowerBody::RAR"] = 0.0;
+
 
     this->mModel->SetJointPositions( joint_position_map );
 
@@ -78,26 +88,29 @@ namespace gazebo {
     bool is_paused = this->mWorld->IsPaused();
     if( !is_paused ) this->mWorld->SetPaused(true);
 
-    std::map<std::string, double> joint_velocity_map;
+    std::map<std::string, double> joint_position_map;
 
-    joint_velocity_map["huboplus::LHP"] = -10*3.1416/180.0;
-    joint_velocity_map["huboplus::RHP"] = -10*3.1416/180.0;
-    joint_velocity_map["huboplus::LHY"] = 0.0;
-    joint_velocity_map["huboplus::RHY"] = 0.0;
-    joint_velocity_map["huboplus::LHR"] = 0.3;
-    joint_velocity_map["huboplus::RHR"] = -0.3;
+    joint_position_map["huboplus_lowerBody::LHP"] = -45*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::RHP"] = -45*3.1416/180.0;
 
-    joint_velocity_map["huboplus::LKP"] =  20*3.1416/180.0;
-    joint_velocity_map["huboplus::RKP"] =  20*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::LKP"] = 90*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::RKP"] = 90*3.1416/180.0;
 
-    joint_velocity_map["huboplus::LAP"] = -10*3.1416/180.0;
-    joint_velocity_map["huboplus::RAP"] = -10*3.1416/180.0;
-    joint_velocity_map["huboplus::LAR"] = 0.3;
-    joint_velocity_map["huboplus::RAR"] = 0.3;
+    joint_position_map["huboplus_lowerBody::LAP"] = -45*3.1416/180.0;
+    joint_position_map["huboplus_lowerBody::RAP"] = -45*3.1416/180.0;
 
 
+    // Keep the rest 0 by now
+    joint_position_map["huboplus_lowerBody::LHY"] = 0.0;
+    joint_position_map["huboplus_lowerBody::RHY"] = 0.0;
 
-    this->mModel->SetJointVelocities( joint_position_map );
+    joint_position_map["huboplus_lowerBody::LHR"] = 0.0;
+    joint_position_map["huboplus_lowerBody::RHR"] = 0.0;
+
+    joint_position_map["huboplus_lowerBody::LAR"] = 0.0;
+    joint_position_map["huboplus_lowerBody::RAR"] = 0.0;
+
+    this->mModel->SetJointPositions( joint_position_map );
 
     // Resume original pause-state
     this->mWorld->SetPaused( is_paused );
