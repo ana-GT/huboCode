@@ -10,4 +10,6 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 add_library(foreleg SHARED foreLeg/foreleg_jointControl.cpp pid_controller.cpp controlBundle.cpp )
 target_link_libraries( foreleg ${GAZEBO_LIBRARIES})
 
+add_library(cog_visual SHARED foreLeg/cog_visual.cpp )
+target_link_libraries( cog_visual ${GAZEBO_LIBRARIES})
 
