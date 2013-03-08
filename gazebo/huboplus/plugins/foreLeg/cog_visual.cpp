@@ -20,7 +20,7 @@ cog_visual::cog_visual() {
  */  
 cog_visual::~cog_visual() {
   
-  event::Events::DisconnectWorldUpdateBegin( this->mUpdateConnection ); 
+  event::Events::DisconnectWorldUpdateStart( this->mUpdateConnection ); 
 }
 
 /**
@@ -37,7 +37,7 @@ void cog_visual::Load( physics::ModelPtr _parent,
   mLastUpdateTime = mModel->GetWorld()->GetSimTime();
   
   // Set to update every world cycle. Listen to update event
-  this->mUpdateConnection = event::Events::ConnectWorldUpdateBegin( boost::bind(&cog_visual::UpdateView, this));
+  this->mUpdateConnection = event::Events::ConnectWorldUpdateStart( boost::bind(&cog_visual::UpdateView, this));
   
   physics::Link_V links = mModel->GetLinks();
 
