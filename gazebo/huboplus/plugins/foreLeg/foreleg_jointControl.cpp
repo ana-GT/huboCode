@@ -5,178 +5,155 @@
 
 namespace gazebo {
 
-/**
- * @function
- * @brief
- */
-foreleg_jointControl::foreleg_jointControl() {
-}
+  /**
+   * @function foreleg_jointControl
+   * @brief Constructor
+   */
+  foreleg_jointControl::foreleg_jointControl() { 
 
-/**
- * @function ~foreleg_jointControl
- * @brief Destructor
- */  
-foreleg_jointControl::~foreleg_jointControl() {
+    mNumActuatedJoints = 13;
+
+    mActuatedJointNames.resize(mNumActuatedJoints);
+    mActuatedJointNames[0] = "LHP"; mActuatedJointNames[1] = "LKP"; 
+    mActuatedJointNames[2] = "LAP"; mActuatedJointNames[3] = "LAR";
+ 
+    mActuatedJointNames[4] = "RHP"; mActuatedJointNames[5] = "RKP"; 
+    mActuatedJointNames[6] = "RAP"; mActuatedJointNames[7] = "RAR"; 
+
+    mActuatedJointNames[8] = "LHY"; mActuatedJointNames[9] = "RHY";
+    mActuatedJointNames[10] = "LHR"; mActuatedJointNames[11] = "RHR";
+    mActuatedJointNames[12] = "HPY"; 
+  }
   
-  event::Events::DisconnectWorldUpdateBegin( this->mUpdateConnection ); 
-}
-
-/**
- * @function Load
- * @brief
- */
-void foreleg_jointControl::Load( physics::ModelPtr _parent, 
-				 sdf::ElementPtr _sdf ) {
+  /**
+   * @function ~foreleg_jointControl
+   * @brief Destructor
+   */  
+  foreleg_jointControl::~foreleg_jointControl() {
+    
+    event::Events::DisconnectWorldUpdateBegin( this->mUpdateConnection ); 
+  }
   
-  printf("Load from foreleg_jointControl \n");
-  this->mModel = _parent;
-  this->mWorld = this->mModel->GetWorld();
+  /**
+   * @function Load
+   * @brief
+   */
+  void foreleg_jointControl::Load( physics::ModelPtr _parent, 
+				   sdf::ElementPtr _sdf ) {
+    
+    printf("Load from foreleg_jointControl \n");
+    this->mModel = _parent;
+    this->mWorld = this->mModel->GetWorld();
+    
+    // Fill the joints
+    mActuatedJoints.resize( mNumActuatedJoints );
+    for( int i = 0; i < mNumActuatedJoints; ++i ) {
+      mActuatedJoints[i] = mModel->GetJoint( mActuatedJointNames[i].c_str() );
+    }
+
+    // Set initial pose
+    SetInitialPose();
+    // Set robot to start with feet parallel to floor
+    SetFootParallelToFloor();
+
+    // Give the gaiter access to the model to control
+    mG.init( mModel, mNumActuatedJoints, mActuatedJoints );
+
+    // Save last update time
+    mLastUpdateTime = mModel->GetWorld()->GetSimTime();
+    
+    // Set to update every world cycle. Listen to update event
+    this->mUpdateConnection = event::Events::ConnectWorldUpdateBegin( boost::bind(&foreleg_jointControl::UpdateStates, this));
+    
+  }
   
+  /**
+   * @function SetInitialPose
+   * @brief
+   */
+  void foreleg_jointControl::SetInitialPose() {   
+    
+    printf("Set initial pose \n");
+    std::map<std::string, double> joint_position_map;
+    // Should use numActuatedJoints...
+    double initialJointVal[13] = {-90, 150, -60, 0, -90, 150, -60, 0, 0, 0, 0, 0, 0 };
+
+    // First simplest rule for flat surfaces: |LHP| + |LAP| = |LKP|
+    for( int i = 0; i < mNumActuatedJoints; ++i ) {
+      char fullName[40];
+      sprintf( fullName, "huboplus_foreleg::%s", mActuatedJointNames[i].c_str() );
+      joint_position_map[fullName] = initialJointVal[i]*3.1416/180.0;
+    }
+    
+    this->mModel->SetJointPositions( joint_position_map );    
+  }
+
+  /**
+   * @function setFootParallelToFloor
+   */
+  void foreleg_jointControl::SetFootParallelToFloor() {
+    
+    // Get World Pose
+    math::Pose worldPose = mModel->GetWorldPose();
+       
+    // Get foot pose (let's assume left and right feet both have the same pose)
+    math::Pose LARPose = mModel->GetLink("Body_LAR")->GetWorldPose();  
+    
+    // Set inverse
+    math::Quaternion invLeftFoot = (LARPose.rot).GetInverse();
+    math::Quaternion newPoseWorld = invLeftFoot*worldPose.rot;
+    math::Pose flatPose;
+    flatPose.Set( worldPose.pos, invLeftFoot );
+    mModel->SetWorldPose( flatPose );
+
+  }
+
   
-  SetInitialPose();
+ 
+  /**
+   * @function CalculateBoundaryValues
+   */
+  void foreleg_jointControl::CalculateBoundaryValues() {
 
-  // Init controlBundle - LEFT LEG
-  int numActuatedJoints = 10;
-  mCb.setSize(numActuatedJoints);
-  std::vector<physics::JointPtr> joints(numActuatedJoints);
-  joints[0] = mModel->GetJoint("LHP");
-  joints[1] = mModel->GetJoint("LKP");
-  joints[2] = mModel->GetJoint("LAP");
-  joints[3] = mModel->GetJoint("LAR");
+    double d1 = 0.28; // Hip to Knee (0.280007)
+    double d2 = 0.28; // Knee to Ankle (0.279942)
+    double p = 0.07; // Length of foot (from ankle forward) (0.07-0.12)
+    double alpha = -30*3.1416/180.0;
+    double max_beta = asin( d2*cos(alpha)/d1 ); // right on top of ankle
+    double min_beta = asin( ( d2*cos(alpha) - p ) / d1 ); // about to leave foot forward
+    
+    double LAP;
+    double minLHP, maxLHP;
+    double minLKP, maxLKP;
 
-  joints[4] = mModel->GetJoint("RHP");
-  joints[5] = mModel->GetJoint("RKP");
-  joints[6] = mModel->GetJoint("RAP");
-  joints[7] = mModel->GetJoint("RAR");
+    LAP = ( 3.1416/2 + alpha )*180.0 / 3.1416;
+    minLHP = min_beta*180.0 / 3.1416; 
+    maxLHP = max_beta*180.0 / 3.1416;
+    minLKP = ( minLHP + LAP ); 
+    maxLKP = ( maxLHP + LAP );
+    
+    std::cout << "Right on top: LAP:"<< LAP <<" LHP: "<<maxLHP<<" LKP: "<<maxLKP<<std::endl;
+    std::cout << "Right on front: LAP:"<< LAP <<" LHP: "<<minLHP<<" LKP: "<<minLKP<<std::endl;
+  }
 
-  joints[8] = mModel->GetJoint("LHY");
-  joints[9] = mModel->GetJoint("RHY");
-
-  mCb.setJoints(joints);
   
-  std::vector<double> targets(numActuatedJoints);
-  targets[0] = -90.0*3.1416/180.0;
-  targets[1] = 150.0*3.1416/180.0;
-  targets[2] = -60.0*3.1416/180.0;
-  targets[3] = 0.0*3.1416/180.0;
-
-  targets[4] = -90.0*3.1416/180.0;
-  targets[5] = 150.0*3.1416/180.0;
-  targets[6] = -60.0*3.1416/180.0;
-  targets[7] = 0.0*3.1416/180.0;
-
-  targets[8] = 0.0*3.1416/180.0;
-  targets[9] = 0.0*3.1416/180.0;
-
-  mCb.setTargets(targets);
-
-  mCb.initPID( 0, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 1, 50, 0, 5, 0, 0, 50, -50 ); // LKP
-  mCb.initPID( 2, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 3, 50, 0, 5, 0, 0, 50, -50 );
-
-  mCb.initPID( 4, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 5, 50, 0, 5, 0, 0, 50, -50 ); // RKP
-  mCb.initPID( 6, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 7, 50, 0, 5, 0, 0, 50, -50 );
-
-  mCb.initPID( 8, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 9, 50, 0, 5, 0, 0, 50, -50 );
-
-  mLastUpdateTime = mModel->GetWorld()->GetSimTime();
-  
-  // Set to update every world cycle. Listen to update event
-  this->mUpdateConnection = event::Events::ConnectWorldUpdateBegin( boost::bind(&foreleg_jointControl::UpdateStates, this));
-  
-
-  // Get World Pose
-  math::Pose worldPose = mModel->GetWorldPose();
-  std::cout << "Pose xyz: "<< worldPose.pos.x << "," << worldPose.pos.y << "," << worldPose.pos.z << std::endl;
-  std::cout << "Rot q: " << worldPose.rot.w << ", " << worldPose.rot.x <<", "<< worldPose.rot.y << ", " << worldPose.rot.z << std::endl;
-
-
-  // Get foot pose
-  math::Pose LARPose = mModel->GetLink("Body_LAR")->GetWorldPose();  
-  std::cout << "Pose LAR xyz: "<< LARPose.pos.x << "," << LARPose.pos.y << "," << LARPose.pos.z << std::endl;
-  std::cout << "Rot q: " << LARPose.rot.w << ", " << LARPose.rot.x <<", "<< LARPose.rot.y << ", " << LARPose.rot.z << std::endl;
-
-  // Set inverse
-  math::Quaternion invFoot = (LARPose.rot).GetInverse();
-  math::Quaternion newPoseWorld = invFoot*worldPose.rot;
-  math::Pose flatPose;
-  flatPose.Set( worldPose.pos, invFoot );
-  mModel->SetWorldPose( flatPose );
-}
-
-/**
- * @function SetInitialPose
- * @brief
- */
-void foreleg_jointControl::SetInitialPose() {   
-
-  printf("Set initial pose \n");
-  std::map<std::string, double> joint_position_map;
-  
-  
-  // First simplest rule for flat surfaces: 
-  // |LHP| + |LAP| = |LKP|
-  joint_position_map["huboplus_foreleg::LHP"] = -90*3.1416/180.0;
-  joint_position_map["huboplus_foreleg::LKP"] = 150*3.1416/180.0;
-  joint_position_map["huboplus_foreleg::LAP"] = -60*3.1416/180.0;
-  joint_position_map["huboplus_foreleg::LAR"] = 0*3.1416/180.0;
-  
-  joint_position_map["huboplus_foreleg::RHP"] = -90*3.1416/180.0;
-  joint_position_map["huboplus_foreleg::RKP"] = 150*3.1416/180.0;
-  joint_position_map["huboplus_foreleg::RAP"] = -60*3.1416/180.0;
-  joint_position_map["huboplus_foreleg::RAR"] = 0*3.1416/180.0;
-
-  this->mModel->SetJointPositions( joint_position_map );
-  
-  
-}
-
-/**
- * @function UpdateStates
- * @brief
+  /**
+   * @function UpdateStates
+   * @brief
  */
 void foreleg_jointControl::UpdateStates() {
-  
+
+
   // Get current time and dt
   common::Time current_time = mModel->GetWorld()->GetSimTime();
   double dt = current_time.Double() - mLastUpdateTime.Double();
-  
-  // Update controllers
-  mCb.updateControls(dt);
-    
-  mLastUpdateTime = current_time;
-  
-}
 
-/**
- * @function FixLink
- * @brief
- */
-void foreleg_jointControl::FixLink( physics::LinkPtr _link ) {
-  
-  this->mJoint = this->mWorld->GetPhysicsEngine()->CreateJoint( "revolute", this->mModel );
-  this->mJoint->SetModel( this->mModel );
-  math::Pose pose = _link->GetWorldPose();
-  this->mJoint->Load( physics::LinkPtr(), _link, pose );
-  this->mJoint->SetAxis( 0, math::Vector3(0,0,0) );
-  this->mJoint->SetHighStop(0,0);
-  this->mJoint->SetLowStop(0,0);
-  this->mJoint->SetAnchor(0, pose.pos );
-  this->mJoint->Init();
-}
+  // Call gaiter
+  mG.update( current_time.Double(), dt );
 
-/**
- * @function UnfixLink
- * @brief
- */
-void foreleg_jointControl::UnfixLink() {
-  this->mJoint.reset();
+  // Update last time
+  mLastUpdateTime = current_time;  
 }
-
 
   GZ_REGISTER_MODEL_PLUGIN( foreleg_jointControl )
   } // end namespace gazebo

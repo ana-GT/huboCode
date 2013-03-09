@@ -83,6 +83,7 @@ enum DynamicSimulationTabEvents {
     id_checkbox_showcontacts = wxID_HIGHEST,
     id_button_showCoM,
     id_button_showJointAxis,
+    id_button_showFootAxis,
     id_button_changeAnklePitch, 
     id_button_applyInvTf,
     id_offsetX_Slider,
@@ -126,6 +127,7 @@ GRIPTab(parent, id, pos, size, style) {
 
     testerButtonsBoxS->Add(new wxButton(this, id_button_showCoM, wxT("Show CoM")), 0, wxALL, 1);
     testerButtonsBoxS->Add(new wxButton(this, id_button_showJointAxis, wxT("Show Joint Axis")), 0, wxALL, 1 );
+    testerButtonsBoxS->Add(new wxButton(this, id_button_showFootAxis, wxT("Show Foot Axis")), 0, wxALL, 1 );
     testerButtonsBoxS->Add(new wxButton(this, id_button_changeAnklePitch, wxT("Change Ankle Pitch")), 0, wxALL, 1 );
     testerButtonsBoxS->Add(new wxButton(this, id_button_applyInvTf, wxT("applyInvTf")), 0, wxALL, 1 );
 
@@ -147,6 +149,7 @@ GRIPTab(parent, id, pos, size, style) {
     // Initialize
     mDrawCoMFlag = false;
     mDrawJointAxisFlag = false;
+    mDrawFootJointFlag = false;
 }
 
 
@@ -170,6 +173,13 @@ void VisualTester::OnButton(wxCommandEvent & _evt) {
       mDrawJointAxisFlag = !mDrawJointAxisFlag;
       if( mDrawJointAxisFlag ) { printf("Joint Axis drawing ON! \n"); }
       else { printf("Joint Axis drawing OFF! \n"); }
+    }
+      break;
+
+    case id_button_showFootAxis: {
+      mDrawFootJointFlag = !mDrawFootJointFlag;
+      if( mDrawFootJointFlag ) { printf("Foot Axis drawing ON! \n"); }
+      else { printf("Foot Axis drawing OFF! \n"); }
     }
       break;
 
@@ -215,9 +225,9 @@ void VisualTester::OnButton(wxCommandEvent & _evt) {
       yaw = atan2(  tWorldInLAPToTorso(1,0),  tWorldInLAPToTorso(0,0) ); 
       std::cout<< "X: "<<x<<" Y: "<<y<<" Z: "<<z<<std::endl;
       std::cout<< "Roll: "<<roll<<" Pitch: "<<pitch<<" Yaw: "<<yaw<<std::endl;
-
-      mWorld->getRobot(0)->setRotationRPY( roll, pitch, yaw );
-      mWorld->getRobot(0)->setPositionXYZ( x, y, z );
+      Eigen::VectorXd pose(6);
+      pose << x, y, z, roll, pitch, yaw;
+      mWorld->getRobot(0)->setRootTransform( pose );
       mWorld->getRobot(0)->update();
       printf("End Inverse Transform \n");
     }
@@ -275,17 +285,68 @@ void VisualTester::GRIPEventRender() {
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_POINT_SMOOTH);
 
+    Eigen::Vector3d ow, xw, yw, zw; // World Locations of axis
+    Eigen::Vector3d ol, xl, yl, zl; // Local locations of axis
+    double d = 0.15;
+    ol << 0, 0, 0;
+    xl << d, 0, 0;
+    yl << 0, d, 0;
+    zl << 0, 0, d;
+    
+    // If Draw Foot Joint
+    if( mDrawFootJointFlag ) {
+      
+      // Draw Axis as lines
+      glBegin(GL_LINES);
+
+      // Draw for ankle pitch
+      std::vector<std::string> footNodeNames(4);
+      footNodeNames[0] = "Body_LAP"; footNodeNames[1] = "Body_LAR";
+      footNodeNames[2] = "Body_RAP"; footNodeNames[3] = "Body_RAR";
+      
+      for( int i = 0; i < footNodeNames.size(); ++i ) {
+
+	// Get origin and axis
+	ow = mWorld->getRobot(0)->getNode(footNodeNames[i].c_str())->evalWorldPos(ol);
+	xw = mWorld->getRobot(0)->getNode(footNodeNames[i].c_str())->evalWorldPos(xl);
+	yw = mWorld->getRobot(0)->getNode(footNodeNames[i].c_str())->evalWorldPos(yl);
+	zw = mWorld->getRobot(0)->getNode(footNodeNames[i].c_str())->evalWorldPos(zl);
+
+	if( i == 0 || i == 2 ) {
+	// X (red)
+	glColor3d(1.0, 0.0, 0.0);
+	glVertex3f( ow(0), ow(1), ow(2) ); glVertex3f( xw(0), xw(1), xw(2) );
+	// Y (green)
+	glColor3d(0.0, 1.0, 0.0);
+	glVertex3f( ow(0), ow(1), ow(2) ); glVertex3f( yw(0), yw(1), yw(2) );
+	// Z (blue)
+	glColor3d(0.0, 0.0, 1.0);
+	glVertex3f( ow(0), ow(1), ow(2) ); glVertex3f( zw(0), zw(1), zw(2) );
+	}
+	else {
+	ow = ow + Eigen::Vector3d( mCoM_drawOffsetX, mCoM_drawOffsetY, mCoM_drawOffsetZ );
+	xw = xw + Eigen::Vector3d( mCoM_drawOffsetX, mCoM_drawOffsetY, mCoM_drawOffsetZ );
+	yw = yw + Eigen::Vector3d( mCoM_drawOffsetX, mCoM_drawOffsetY, mCoM_drawOffsetZ );
+	zw = zw + Eigen::Vector3d( mCoM_drawOffsetX, mCoM_drawOffsetY, mCoM_drawOffsetZ );
+
+	// X (red)
+	glColor3d(1.0, 0.0, 0.0);
+	glVertex3f( ow(0), ow(1), ow(2) ); glVertex3f( xw(0), xw(1), xw(2) );
+	// Y (green)
+	glColor3d(0.0, 1.0, 0.0);
+	glVertex3f( ow(0), ow(1), ow(2) ); glVertex3f( yw(0), yw(1), yw(2) );
+	// Z (blue)
+	glColor3d(0.0, 0.0, 1.0);
+	glVertex3f( ow(0), ow(1), ow(2) ); glVertex3f( zw(0), zw(1), zw(2) );
+	}
+      }
+      glEnd();
+
+    } // end if mDrawFootJointFlag
+
     // Draw Axis Joint
     if( mDrawJointAxisFlag ) {
  
-      Eigen::Vector3d ow, xw, yw, zw; // World Locations of axis
-      Eigen::Vector3d ol, xl, yl, zl; // Local locations of axis
-      double d = 0.1;
-      ol << 0, 0, 0;
-      xl << d, 0, 0;
-      yl << 0, d, 0;
-      zl << 0, 0, d;
-
       // Draw Axis as lines
       glBegin(GL_LINES);
       
@@ -329,7 +390,7 @@ void VisualTester::GRIPEventRender() {
       for( int i = 0; i < mWorld->getRobot(0)->getNumNodes(); ++i ) {
 	glPushMatrix();
 	cmPos = mWorld->getRobot(0)->getNode(i)->getWorldCOM();
-	glTranslatef( cmPos(0) +  mCoM_drawOffsetX, 
+	glTranslatef( cmPos(0) + mCoM_drawOffsetX, 
 		      cmPos(1) + mCoM_drawOffsetY, 
 		      cmPos(2) + mCoM_drawOffsetZ );
 	// Draw it

@@ -66,6 +66,7 @@ public:
     kinematics::BodyNode* selectedNode;
     bool mDrawCoMFlag;
     bool  mDrawJointAxisFlag;
+    bool mDrawFootJointFlag;
     GRIPSlider* mOffsetX_Slider;
     GRIPSlider* mOffsetY_Slider;
     GRIPSlider* mOffsetZ_Slider;

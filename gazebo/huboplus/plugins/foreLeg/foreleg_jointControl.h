@@ -14,8 +14,8 @@
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/Events.hh>
 
-#include "../controlBundle.h"
-#include "../pid_controller.h"
+#include <controls/controlBundle.h>
+#include <gaiter/gaiter.h>
 
 namespace gazebo {
 
@@ -32,16 +32,20 @@ namespace gazebo {
 	       sdf::ElementPtr _sdf );
 
     void SetInitialPose();
-  private:
+    void SetFootParallelToFloor();
+    void CalculateBoundaryValues();
     void UpdateStates();
-    void FixLink( physics::LinkPtr _link );
-    void UnfixLink();
-    
+
+  private:
     physics::WorldPtr mWorld;
     physics::ModelPtr mModel;
-    physics::JointPtr mJoint;
+    
+    int mNumActuatedJoints;
+    std::vector<std::string> mActuatedJointNames;
+    std::vector<physics::JointPtr> mActuatedJoints;
 
     controlBundle mCb;
+    gaiter mG;
 
     common::Time mLastUpdateTime;
 
