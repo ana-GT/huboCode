@@ -38,7 +38,7 @@ class gaiter {
 
   // Raise Up
   void run_RaiseUp( double _currentTime, double _dt  );
-  void init_RaiseUp();
+  void init_RaiseUp( double _startTime );
 
   // Raise Left
   void run_RaiseLeft( double _currentTime, double _dt  );

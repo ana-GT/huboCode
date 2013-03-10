@@ -8,9 +8,10 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <math.h>
+#include <vector>
+#include <complex>
 
-/** Define for the arm's DOF as well as for legs */
-typedef Eigen::Matrix<double,6,1> Vector6d;
 
 /** Enum of sides*/
 typedef enum {
@@ -33,10 +34,22 @@ class motion_rt {
   void testRightArmFK();
   void testLeftLegFK();
   void testRightLegFK();
+  void testLegIK();
+
+  void tesArmIKwithURDF();
+  void tesLegIKwithURDF();
 
   void testInverseTF();
 
   // ~~~*** Kinematics ***~~~ //
+  // Useful functions
+  // Useful functions
+  inline double mod(double x, double y) { 
+    if (0 == y) { return x; }   
+    return x - y * floor(x/y); 
+  }
+  
+  inline double wrapToPi(double fAng) { return mod(fAng + M_PI, 2*M_PI) - M_PI; }
   inline double min(double x, double y) { return ( x > y ) ? y : x; }
   inline double max(double x, double y) { return ( x < y ) ? y : x; }
   
@@ -49,6 +62,12 @@ class motion_rt {
 		  Eigen::VectorXd &q, 
 		  int side);
 
+  void huboArmIK(Eigen::VectorXd &q, 
+		 Eigen::Isometry3d B, 
+		 Eigen::VectorXd qPrev, int side);
+  void huboArmIK(Eigen::VectorXd &q, const Eigen::Isometry3d B, 
+		 Eigen::VectorXd qPrev, int side, 
+		 const Eigen::Isometry3d &endEffector);
 
   void huboArmFK( Eigen::Isometry3d &B, 
 		  Eigen::VectorXd &q, 
@@ -56,6 +75,12 @@ class motion_rt {
 		 const Eigen::Isometry3d &endEffector);
   void huboLegFK(Eigen::Isometry3d &B,  Eigen::VectorXd &q, int side);
 
+  void huboLegIK(Eigen::VectorXd &q, const Eigen::Isometry3d B, Eigen::VectorXd qPrev, int side);
+  void huboLegIK2( Eigen::VectorXd &q, 
+		   const Eigen::Isometry3d B, 
+		   Eigen::VectorXd qPrev, int side);
+
+ 
   // Test stuff
   dynamics::SkeletonDynamics* mSkel;
 
@@ -83,6 +108,9 @@ class motion_rt {
 
   Eigen::VectorXd mLeftLegConfig;
   Eigen::VectorXd mRightLegConfig;
+
+  Eigen::VectorXd mArmLengths;
+  Eigen::VectorXd mLegLengths;
 
 };
 

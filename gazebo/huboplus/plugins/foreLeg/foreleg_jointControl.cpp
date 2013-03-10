@@ -14,14 +14,14 @@ namespace gazebo {
     mNumActuatedJoints = 13;
 
     mActuatedJointNames.resize(mNumActuatedJoints);
-    mActuatedJointNames[0] = "LHP"; mActuatedJointNames[1] = "LKP"; 
-    mActuatedJointNames[2] = "LAP"; mActuatedJointNames[3] = "LAR";
- 
-    mActuatedJointNames[4] = "RHP"; mActuatedJointNames[5] = "RKP"; 
-    mActuatedJointNames[6] = "RAP"; mActuatedJointNames[7] = "RAR"; 
+    mActuatedJointNames[0] = "LHP"; mActuatedJointNames[1] = "RHP";
+    mActuatedJointNames[2] = "LHY"; mActuatedJointNames[3] = "RHY";
+    mActuatedJointNames[4] = "LHR"; mActuatedJointNames[5] = "RHR";
 
-    mActuatedJointNames[8] = "LHY"; mActuatedJointNames[9] = "RHY";
-    mActuatedJointNames[10] = "LHR"; mActuatedJointNames[11] = "RHR";
+    mActuatedJointNames[6] = "LKP"; mActuatedJointNames[7] = "RKP"; 
+    mActuatedJointNames[8] = "LAP"; mActuatedJointNames[9] = "RAP"; 
+    mActuatedJointNames[10] = "LAR"; mActuatedJointNames[11] = "RAR"; 
+ 
     mActuatedJointNames[12] = "HPY"; 
   }
   
@@ -56,6 +56,8 @@ namespace gazebo {
     // Set robot to start with feet parallel to floor
     SetFootParallelToFloor();
 
+    CalculateBoundaryValues();
+
     // Give the gaiter access to the model to control
     mG.init( mModel, mNumActuatedJoints, mActuatedJoints );
 
@@ -76,7 +78,7 @@ namespace gazebo {
     printf("Set initial pose \n");
     std::map<std::string, double> joint_position_map;
     // Should use numActuatedJoints...
-    double initialJointVal[13] = {-60, 120, -60, 0, -60, 120, -60, 0, 0, 0, 0, 0, 0 };
+    double initialJointVal[13] = {-60, -60, 0, 0, 0, 0, 120, 120, -60, -60, 0, 0, 0 };
 
     // First simplest rule for flat surfaces: |LHP| + |LAP| = |LKP|
     for( int i = 0; i < mNumActuatedJoints; ++i ) {
@@ -118,19 +120,19 @@ namespace gazebo {
     double d1 = 0.28; // Hip to Knee (0.280007)
     double d2 = 0.28; // Knee to Ankle (0.279942)
     double p = 0.07; // Length of foot (from ankle forward) (0.07-0.12)
-    double alpha = -30*3.1416/180.0;
-    double max_beta = asin( d2*cos(alpha)/d1 ); // right on top of ankle
-    double min_beta = asin( ( d2*cos(alpha) - p ) / d1 ); // about to leave foot forward
+    double alpha = -60*3.1416/180.0;
+    double max_beta = -1*asin( (d2/d1)*sin(-alpha) ); // right on top of ankle
+    double min_beta = -1*asin( ( d2*sin(-alpha) - p ) / d1 ); // about to leave foot forward
     
     double LAP;
     double minLHP, maxLHP;
     double minLKP, maxLKP;
 
-    LAP = ( 3.1416/2 + alpha )*180.0 / 3.1416;
+    LAP = ( alpha )*180.0 / 3.1416;
     minLHP = min_beta*180.0 / 3.1416; 
     maxLHP = max_beta*180.0 / 3.1416;
-    minLKP = ( minLHP + LAP ); 
-    maxLKP = ( maxLHP + LAP );
+    minLKP = ( -minLHP - LAP ); 
+    maxLKP = ( -maxLHP - LAP );
     
     std::cout << "Right on top: LAP:"<< LAP <<" LHP: "<<maxLHP<<" LKP: "<<maxLKP<<std::endl;
     std::cout << "Right on front: LAP:"<< LAP <<" LHP: "<<minLHP<<" LKP: "<<minLKP<<std::endl;

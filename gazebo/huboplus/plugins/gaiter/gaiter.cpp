@@ -42,7 +42,9 @@ bool gaiter::init( physics::ModelPtr _model,
   mCb.setJoints(mActuatedJoints);
 
   // Call initialization procedures for particular behaviors
-  init_RaiseUp();
+  // Init with current time
+  common::Time currentTime = mModel->GetWorld()->GetSimTime();
+  init_RaiseUp( currentTime.Double() );
   
 }
 
@@ -79,34 +81,46 @@ void gaiter::update( double _currentTime, double _dt ) {
  */
 void gaiter::run_RaiseUp( double _currentTime, double _dt  ) {
 
+  double startLegTime = 3.0;
+  double startHipTime = 6.0;
+  double endTime = 7.0;
+
   // Change of behavior if time is up
-  if( _currentTime > 8.0 ) {
+  if( (_currentTime - mStartBehaviorTime) > endTime ) {
     mState = RISE_LEFT;
     init_RaiseLeft( _currentTime );
     return;
   }
   
   // Else
-  else if( _currentTime > 3.0 ) {
-
-    // Move ankles (LAP) until time is up
-    if( _currentTime < 5.0 ) {
-    mCb.mTargets[2] = mCb.mTargets[2] + _dt*(5.0*3.1416/180.0);
-    mCb.mTargets[6] = mCb.mTargets[6] + _dt*(5.0*3.1416/180.0);
-    }
-
-    // LKP and RKP
-    mCb.mTargets[1] = mCb.mTargets[1] - _dt*(5.0*3.1416/180.0);
-    mCb.mTargets[5] = mCb.mTargets[5] - _dt*(5.0*3.1416/180.0);
+  else if( (_currentTime - mStartBehaviorTime)  > startLegTime ) {
     
-    // Start hips
-    if( _currentTime > 5.0 ) {
-      // LHP and RHP
-      mCb.mTargets[0] = mCb.mTargets[0] - _dt*(5.0*3.1416/180.0);
-      mCb.mTargets[4] = mCb.mTargets[4] - _dt*(5.0*3.1416/180.0);
-    }
+    if( (_currentTime - mStartBehaviorTime) < startHipTime ) {
+      // Ankles: LAP & RAP
+      mCb.mTargets[8] = mCb.mTargets[8] + _dt*(5.0*3.1416/180.0);
+      mCb.mTargets[9] = mCb.mTargets[9] + _dt*(5.0*3.1416/180.0);
 
-    std::cout << " LAP: "<< mCb.mTargets[2]*180.0/3.1416<< "LKP: "<< mCb.mTargets[1]*180.0/3.1416 << " LHP: " << mCb.mTargets[0]*180.0/3.1416 << std::endl;
+      // Hips: LHP && RHP (0 change)
+      mCb.mTargets[0] = mCb.mTargets[0] + _dt*(0.0*3.1416/180.0);
+      mCb.mTargets[1] = mCb.mTargets[1] + _dt*(0.0*3.1416/180.0);
+
+      // Knees: LKP and RKP
+      mCb.mTargets[6] = -1*( mCb.mTargets[8] + mCb.mTargets[0] );
+      mCb.mTargets[7] = -1*( mCb.mTargets[9] + mCb.mTargets[1] ); // - dt*...
+    }
+      
+    // Start turning to the left
+    else if( (_currentTime - mStartBehaviorTime) > startHipTime ) {
+
+      // Roll ankles: LAR  & RAR
+      mCb.mTargets[10] = mCb.mTargets[10] + _dt*(5.0*3.1416/180.0);
+      mCb.mTargets[11] = mCb.mTargets[11] + _dt*(5.0*3.1416/180.0);
+      // And hips: LHR & RHR
+      mCb.mTargets[4] = mCb.mTargets[4] - _dt*(5.0*3.1416/180.0);
+      mCb.mTargets[5] = mCb.mTargets[5] - _dt*(5.0*3.1416/180.0);
+
+    }
+    
   }
   
   // Update controllers
@@ -117,8 +131,11 @@ void gaiter::run_RaiseUp( double _currentTime, double _dt  ) {
 /**
  * @function initRaiseUp
  */
-void gaiter::init_RaiseUp() {
+void gaiter::init_RaiseUp( double _startTime ) {
   
+  // Set starting time
+  mStartBehaviorTime = _startTime;
+
   // Set targets as their initial values
   std::vector<double> targets( mNumActuatedJoints );
   for( int i = 0; i < mNumActuatedJoints; ++i ) {
@@ -127,22 +144,22 @@ void gaiter::init_RaiseUp() {
   mCb.setTargets(targets);
   
   // Set PID initial values
-  mCb.initPID( 0, 75, 0, 7.5, 0, 0, 75, -75 );
-  mCb.initPID( 1, 1000, 0, 40, 0, 0, 1000, -1000 ); // LKP
-  mCb.initPID( 2, 100, 0, 5, 0, 0, 100, -100 );
+  mCb.initPID( 0, 50, 0, 5, 0, 0, 50, -50 );
+  mCb.initPID( 1, 50, 0, 5, 0, 0, 50, -50 );
+  mCb.initPID( 2, 50, 0, 5, 0, 0, 50, -50 );
   mCb.initPID( 3, 50, 0, 5, 0, 0, 50, -50 );
-  
-  mCb.initPID( 4, 75, 0, 7.5, 0, 0, 75, -75 );
-  mCb.initPID( 5, 1000, 0, 40, 0, 0, 1000, -1000 ); // RKP
-  mCb.initPID( 6, 100, 0, 5, 0, 0, 100, -100 );
-  mCb.initPID( 7, 50, 0, 5, 0, 0, 50, -50 );
-  
-  mCb.initPID( 8, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 9, 50, 0, 5, 0, 0, 50, -50 );
-  mCb.initPID( 10, 50, 0, 5, 0, 0, 50, -50 ); // LHR
-  mCb.initPID( 11, 50, 0, 5, 0, 0, 50, -50 ); // RHR
-  
-  mCb.initPID( 12, 50, 0, 5, 0, 0, 50, -50 );    
+  mCb.initPID( 4, 50, 0, 5, 0, 0, 50, -50 );
+  mCb.initPID( 5, 50, 0, 5, 0, 0, 50, -50 );
+
+  mCb.initPID( 6, 1000, 0, 5, 0, 0, 1000, -1000 ); // LKP
+  mCb.initPID( 7, 1000, 0, 5, 0, 0, 1000, -1000 ); // RKP
+
+  mCb.initPID( 8, 200, 0, 10, 0, 0, 200, -200 ); // LAP
+  mCb.initPID( 9, 200, 0, 10, 0, 0, 200, -200 ); // RAP
+  mCb.initPID( 10, 50, 0, 5, 0, 0, 50, -50 );
+  mCb.initPID( 11, 50, 0, 5, 0, 0, 50, -50 );
+
+  mCb.initPID( 12, 50, 0, 5, 0, 0, 50, -50 ); // Torso    
   
 }
 
@@ -154,6 +171,14 @@ void gaiter::init_RaiseUp() {
 void gaiter::run_RaiseLeft( double _currentTime, double _dt  ) {
 
 
+ double F_LHY = mActuatedJoints[2]->GetForce(0);
+ double F_RHY = mActuatedJoints[3]->GetForce(0);
+
+ double LHY = mActuatedJoints[2]->GetAngle(0).Degree();
+ double RHY = mActuatedJoints[3]->GetAngle(0).Degree();
+
+ std::cout << "Force in LHY ( "<< LHY << " ): " << F_LHY << " and RHY ( "<< RHY <<" ): "<< F_RHY << std::endl;
+  /*
   // Change of behavior if time is up
   if( _currentTime - mStartBehaviorTime  > 3.0 ) {
     //mState = FORWARD_LEFT;
@@ -172,7 +197,7 @@ void gaiter::run_RaiseLeft( double _currentTime, double _dt  ) {
     //mCb.mTargets[1] = mCb.mTargets[1] - _dt*(5.0*3.1416/180.0);
     //mCb.mTargets[5] = mCb.mTargets[5] - _dt*(5.0*3.1416/180.0);
     
-  }
+    } */
   
   // Update controllers
   mCb.updateControls(_dt);
