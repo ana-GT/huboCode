@@ -76,7 +76,7 @@ namespace gazebo {
     printf("Set initial pose \n");
     std::map<std::string, double> joint_position_map;
     // Should use numActuatedJoints...
-    double initialJointVal[13] = {-90, 150, -60, 0, -90, 150, -60, 0, 0, 0, 0, 0, 0 };
+    double initialJointVal[13] = {-60, 120, -60, 0, -60, 120, -60, 0, 0, 0, 0, 0, 0 };
 
     // First simplest rule for flat surfaces: |LHP| + |LAP| = |LKP|
     for( int i = 0; i < mNumActuatedJoints; ++i ) {

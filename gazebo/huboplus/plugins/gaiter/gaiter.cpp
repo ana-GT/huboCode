@@ -98,7 +98,15 @@ void gaiter::run_RaiseUp( double _currentTime, double _dt  ) {
     // LKP and RKP
     mCb.mTargets[1] = mCb.mTargets[1] - _dt*(5.0*3.1416/180.0);
     mCb.mTargets[5] = mCb.mTargets[5] - _dt*(5.0*3.1416/180.0);
+    
+    // Start hips
+    if( _currentTime > 5.0 ) {
+      // LHP and RHP
+      mCb.mTargets[0] = mCb.mTargets[0] - _dt*(5.0*3.1416/180.0);
+      mCb.mTargets[4] = mCb.mTargets[4] - _dt*(5.0*3.1416/180.0);
+    }
 
+    std::cout << " LAP: "<< mCb.mTargets[2]*180.0/3.1416<< "LKP: "<< mCb.mTargets[1]*180.0/3.1416 << " LHP: " << mCb.mTargets[0]*180.0/3.1416 << std::endl;
   }
   
   // Update controllers
