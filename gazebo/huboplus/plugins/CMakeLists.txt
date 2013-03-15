@@ -16,3 +16,5 @@ target_link_libraries( foreleg ${GAZEBO_LIBRARIES})
 add_library(cog_visual SHARED foreLeg/cog_visual.cpp )
 target_link_libraries( cog_visual ${GAZEBO_LIBRARIES})
 
+add_library(swing_plugin SHARED swing/swing_plugin.cpp )
+target_link_libraries( swing_plugin ${GAZEBO_LIBRARIES})

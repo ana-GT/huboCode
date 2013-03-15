@@ -1,0 +1,39 @@
+<sdf version="1.3">
+    <model name="huboplus_rightFoot">
+	<static>true</static>
+        <link name="Body_RAR">
+            <pose>0 0 0 0 -0 0</pose>
+            <inertial>
+                <pose>-0.0515094 -0.00216398 -0.0693881 0 -0 0</pose>
+                <mass>1.20318</mass>
+                <inertia>
+                    <ixx>0.00295183</ixx>
+                    <ixy>-3.23211e-05</ixy>
+                    <ixz>0.000141769</ixz>
+                    <iyy>0.00524792</iyy>
+                    <iyz>-5.95404e-05</iyz>
+                    <izz>0.00516817</izz>
+                </inertia>
+            </inertial>
+            <collision name="Body_RAR_collision">
+                <pose>0 0 0 0 -0 0</pose>
+                <geometry>
+                    <mesh>
+                        <scale>1 1 1</scale>
+                        <uri>model://huboplus/dae/Body_RAR_col.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+            <visual name="Body_RAR_vis">
+                <pose>0 0 0 0 -0 0</pose>
+                <geometry>
+                    <mesh>
+                        <scale>1 1 1</scale>
+                        <uri>model://huboplus/dae/Body_RAR_vis.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+
+    </model>
+</sdf>

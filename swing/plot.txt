@@ -1,0 +1,11 @@
+set grid
+set grid
+splot "pos.txt" with lines
+
+set xlabel "t(s)"
+set ylabel "vel (m/s)"
+plot "vel.txt" using 1:2 title "Vel x" with lines, "vel.txt" using 1:3 title "Vel y" with lines, "vel.txt" using 1:4 title "Vel z" with lines, "vel.txt" using 1:5 title "Vel yaw" with lines
+
+set xlabel "t(s)"
+set ylabel "acc (m/s^2)"
+plot "acc.txt" using 1:2 title "Acc x" with lines, "acc.txt" using 1:3 title "Acc y" with lines, "acc.txt" using 1:4 title "Acc z" with lines, "acc.txt" using 1:5 title "Acc yaw" with lines
