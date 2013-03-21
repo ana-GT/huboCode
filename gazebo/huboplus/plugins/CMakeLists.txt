@@ -18,3 +18,6 @@ target_link_libraries( cog_visual ${GAZEBO_LIBRARIES})
 
 add_library(swing_plugin SHARED swing/swing_plugin.cpp )
 target_link_libraries( swing_plugin ${GAZEBO_LIBRARIES})
+
+add_library(hiWorld_plugin SHARED snippets/hiWorld_plugin.cpp )
+target_link_libraries( hiWorld_plugin ${GAZEBO_LIBRARIES})
