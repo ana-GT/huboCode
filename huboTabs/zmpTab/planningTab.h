@@ -64,27 +64,30 @@ public:
   virtual void GRIPEventSimulationBeforeTimestep();
   virtual void GRIPEventSceneLoaded();
 
-  void onButtonSetStart(wxCommandEvent & _evt);
-  void onButtonSetGoal(wxCommandEvent & _evt);
-  void onButtonSetPredefStart(wxCommandEvent & _evt);
-  void onButtonSetPredefGoal(wxCommandEvent & _evt);
-  void onButtonRelocateObjects(wxCommandEvent & _evt);
-  void onButtonShowStart(wxCommandEvent & _evt);
-  void onButtonShowGoal(wxCommandEvent & _evt);
-  void onButtonPrevStep(wxCommandEvent & _evt);
-  void onButtonNextStep(wxCommandEvent & _evt);
+  void onButton1(wxCommandEvent & _evt);
+  void onButton2(wxCommandEvent & _evt);
+  void onButton3(wxCommandEvent & _evt);
+  void onButton4(wxCommandEvent & _evt);
   void onButtonPlan(wxCommandEvent & _evt);
+
 
   planning::Controller* mController;
   
   int mRobotIndex;
+  std::vector<int> mBodyDofs;
+  static const int mNumBodyDofs;
+  static std::string mBodyDofNames[];
+  static std::string mBodyJointNames[];
+
   std::vector<int> mArmDofs;
+ 
   Eigen::VectorXd mStartConf;
   Eigen::VectorXd mGoalConf;
   Eigen::VectorXd mPredefStartConf;
   Eigen::VectorXd mPredefGoalConf;
 
   int path_index;
+  int mPathDelta;
   std::vector<Eigen::VectorXd> computed_path;
 
   DECLARE_DYNAMIC_CLASS(planningTab)

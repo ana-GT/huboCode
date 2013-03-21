@@ -60,38 +60,40 @@
 
 using namespace std;
 
+const int planningTab::mNumBodyDofs = 24;
+std::string planningTab::mBodyDofNames[] = {"Body_LSP", "Body_LSR", "Body_LSY", "Body_LEP", "Body_LWY", "Body_LWP",
+					    "Body_RSP", "Body_RSR", "Body_RSY", "Body_REP", "Body_RWY", "Body_RWP",
+					    "Body_LHY", "Body_LHR", "Body_LHP", "Body_LKP", "Body_LAP", "Body_LAR",
+					    "Body_RHY", "Body_RHR", "Body_RHP", "Body_RKP", "Body_RAP", "Body_RAR"};
+
+std::string planningTab::mBodyJointNames[] = {"LSP", "LSR", "LSY", "LEP", "LWY", "LWP",
+					      "RSP", "RSR", "RSY", "REP", "RWY", "RWP",
+					      "LHY", "LHR", "LHP", "LKP", "LAP", "LAR",
+					      "RHY", "RHR", "RHP", "RKP", "RAP", "RAR"};
+
 // Define IDs for buttons
 enum DynamicSimulationTabEvents {
-  id_button_SetStart = 8345,
-  id_button_SetGoal,
-  id_button_SetPredefStart,
-  id_button_SetPredefGoal,
-  id_button_RelocateObjects,
-  id_button_ShowStart,
-  id_button_ShowGoal,
-  id_button_PrevStep,
-  id_button_NextStep,
+  id_button_1 = 8345,
+  id_button_2,
+  id_button_3,
+  id_button_4,
   id_button_Plan
 };
 
 // Handler for events
 BEGIN_EVENT_TABLE(planningTab, wxPanel)
-EVT_COMMAND (id_button_SetStart, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonSetStart)
-EVT_COMMAND (id_button_SetGoal, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonSetGoal)
-EVT_COMMAND (id_button_SetPredefStart, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonSetPredefStart)
-EVT_COMMAND (id_button_SetPredefGoal, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonSetPredefGoal)
-EVT_COMMAND (id_button_RelocateObjects, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonRelocateObjects)
-EVT_COMMAND (id_button_ShowStart, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonShowStart)
-EVT_COMMAND (id_button_ShowGoal, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonShowGoal)
-EVT_COMMAND (id_button_PrevStep, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonPrevStep)
-EVT_COMMAND (id_button_NextStep, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonNextStep)
+EVT_COMMAND (id_button_1, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton1)
+EVT_COMMAND (id_button_2, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton2)
+EVT_COMMAND (id_button_3, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton3)
+EVT_COMMAND (id_button_4, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton4)
 EVT_COMMAND (id_button_Plan, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonPlan)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(planningTab, GRIPTab)
 
-planningTab::planningTab(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
-  GRIPTab(parent, id, pos, size, style)
+planningTab::planningTab(wxWindow *parent, const wxWindowID id, 
+			 const wxPoint& pos, const wxSize& size, long style) :
+GRIPTab(parent, id, pos, size, style)
 {
   // Create user interface
   wxSizer* sizerFull= new wxBoxSizer(wxHORIZONTAL);
@@ -104,16 +106,13 @@ planningTab::planningTab(wxWindow *parent, const wxWindowID id, const wxPoint& p
   wxStaticBoxSizer* ss2BoxS = new wxStaticBoxSizer(ss2Box, wxVERTICAL);
   wxStaticBoxSizer* ss3BoxS = new wxStaticBoxSizer(ss3Box, wxVERTICAL);
 
-  ss1BoxS->Add(new wxButton(this, id_button_SetStart, wxT("Set Start Conf")), 0, wxALL, 1); 
-  ss1BoxS->Add(new wxButton(this, id_button_SetGoal, wxT("Set Goal Conf")), 0, wxALL, 1); 
-  ss1BoxS->Add(new wxButton(this, id_button_SetPredefStart, wxT("Set Predef Start")), 0, wxALL, 1); 
-  ss1BoxS->Add(new wxButton(this, id_button_SetPredefGoal, wxT("Set Predef Goal")), 0, wxALL, 1); 
-  ss1BoxS->Add(new wxButton(this, id_button_RelocateObjects, wxT("Relocate objects")), 0, wxALL, 1);
-  ss2BoxS->Add(new wxButton(this, id_button_ShowStart, wxT("Show Start")), 0, wxALL, 1); 
-  ss2BoxS->Add(new wxButton(this, id_button_ShowGoal, wxT("Show Goal")), 0, wxALL, 1); 
-  ss2BoxS->Add(new wxButton(this, id_button_PrevStep, wxT("Prev Step")), 0, wxALL, 1);
-  ss2BoxS->Add(new wxButton(this, id_button_NextStep, wxT("Next Step")), 0, wxALL, 1);
-  ss3BoxS->Add(new wxButton(this, id_button_Plan, wxT("Do Planning")), 0, wxALL, 1); 
+  ss1BoxS->Add(new wxButton(this, id_button_1, wxT("Set start")), 0, wxALL, 1); 
+  ss1BoxS->Add(new wxButton(this, id_button_2, wxT("Button 2")), 0, wxALL, 1); 
+
+  ss2BoxS->Add(new wxButton(this, id_button_3, wxT("Prev Step")), 0, wxALL, 1); 
+  ss2BoxS->Add(new wxButton(this, id_button_4, wxT("Next Step")), 0, wxALL, 1); 
+
+  ss3BoxS->Add(new wxButton(this, id_button_Plan, wxT("Run")), 0, wxALL, 1); 
 
   sizerFull->Add(ss1BoxS, 1, wxEXPAND | wxALL, 6);
   sizerFull->Add(ss2BoxS, 1, wxEXPAND | wxALL, 6);
@@ -125,44 +124,26 @@ planningTab::planningTab(wxWindow *parent, const wxWindowID id, const wxPoint& p
   mRobotIndex = 0; // We only simulate one robot in this demo so we know its index is 0
 
   // Set predefined start and goal configuration
-  mPredefStartConf.resize(24);
-  mPredefGoalConf.resize(24);
+  mPredefStartConf.resize( mNumBodyDofs );
+  mPredefGoalConf.resize( mNumBodyDofs );
 
   mPredefStartConf << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.174533,  0.349066, -0.174533, 0, 0, 0, -0.174533, 0.349066, -0.174533, 0;
   mPredefGoalConf <<  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.174533,  0.349066, -0.174533, 0, 0, 0, -0.174533, 0.349066, -0.174533, 0;
-
+  
   mStartConf = mPredefStartConf;
   mGoalConf = mPredefGoalConf;
+
+  mPathDelta = 10;
 }
 
 
 /// Gets triggered after a world is loaded
 void planningTab::GRIPEventSceneLoaded() {
-  // Set initial configuration for the legs
-  mWorld->getRobot(mRobotIndex)->getDof(19)->setValue(-10.0 * M_PI/180.0);
-  mWorld->getRobot(mRobotIndex)->getDof(20)->setValue(-10.0 * M_PI/180.0);
-  mWorld->getRobot(mRobotIndex)->getDof(23)->setValue(20.0 * M_PI/180.0);
-  mWorld->getRobot(mRobotIndex)->getDof(24)->setValue(20.0 * M_PI/180.0);
-  mWorld->getRobot(mRobotIndex)->getDof(27)->setValue(-10.0 * M_PI/180.0);
-  mWorld->getRobot(mRobotIndex)->getDof(28)->setValue(-10.0 * M_PI/180.0);
-  mWorld->getRobot(mRobotIndex)->update();
-
-  // Define right arm nodes
-  /*
-  "LSP", "LSR", "LSY", "LEP", "LWY", "LWP",
-  "RSP", "RSR", "RSY", "REP", "RWY", "RWP",
-  "LHY", "LHR", "LHP", "LKP", "LAP", "LAR",
-  "RHY", "RHR", "RHP", "RKP", "RAP", "RAR",
-  */
-
-  const string armNodes[] = {"Body_LSP", "Body_LSR", "Body_LSY", "Body_LEP", "Body_LWY", "Body_LWP",
-		  	  	  	  	  	 "Body_RSP", "Body_RSR", "Body_RSY", "Body_REP", "Body_RWY", "Body_RWP",
-		  	  	  	  	     "Body_LHY", "Body_LHR", "Body_LHP", "Body_LKP", "Body_LAP", "Body_LAR",
-		  	  	  	  	     "Body_RHY", "Body_RHR", "Body_RHP", "Body_RKP", "Body_RAP", "Body_RAR"};
-
-  mArmDofs.resize(24);
-  for(int i = 0; i < mArmDofs.size(); i++) {
-    mArmDofs[i] = mWorld->getRobot(mRobotIndex)->getNode(armNodes[i].c_str())->getDof(0)->getSkelIndex();
+  
+  // Store the indices for the Body Dofs
+  mBodyDofs.resize( mNumBodyDofs );
+  for(int i = 0; i < mBodyDofs.size(); i++) {
+    mBodyDofs[i] = mWorld->getRobot(mRobotIndex)->getNode( mBodyDofNames[i].c_str())->getDof(0)->getSkelIndex();
   }
 }
 
@@ -174,237 +155,122 @@ void planningTab::GRIPEventSimulationBeforeTimestep() {
 }
 
 
-/// Set start configuration to the configuration the arm is currently in
-void planningTab::onButtonSetStart(wxCommandEvent & _evt) {
+/// Button 1
+void planningTab::onButton1(wxCommandEvent & _evt) {
+
   if(!mWorld || mWorld->getNumRobots() < 1) {
     cout << "No world loaded or world does not contain a robot." << endl;
     return;
   }
-
-  mStartConf = mWorld->getRobot(mRobotIndex)->getConfig(mArmDofs);
-  cout << "Start Configuration: " << mStartConf.transpose() << endl;
-}
-
-
-/// Set goal configuration to the configuration the arm is currently in
-void planningTab::onButtonSetGoal(wxCommandEvent & _evt) {
-  if(!mWorld || mWorld->getNumRobots() < 1) {
-    cout << "No world loaded or world does not contain a robot." << endl;
-    return;
-  }
-
-  mGoalConf = mWorld->getRobot(mRobotIndex)->getConfig(mArmDofs);
-  cout << "Goal Configuration: " << mGoalConf.transpose() << endl;
-}
-
-
-/// Reset start configuration to the predefined one
-void planningTab::onButtonSetPredefStart(wxCommandEvent & _evt) {
-  mStartConf = mPredefStartConf;
-}
-
-
-/// Reset goal configuration to the predefined one
-void planningTab::onButtonSetPredefGoal(wxCommandEvent & _evt) {
-  mGoalConf = mPredefGoalConf;
-}
-
-
-/// Move objects to obstruct the direct path between the predefined start and goal configurations
-void planningTab::onButtonRelocateObjects(wxCommandEvent & _evt) {
-
-  robotics::Robot* orangeCube = (robotics::Robot*)mWorld->getSkeleton("orangeCube");
-  robotics::Robot* yellowCube = (robotics::Robot*)mWorld->getSkeleton("yellowCube");
   
-  if(!orangeCube || !yellowCube) {
-    cout << "Did not find orange or yellow object. Exiting and no moving anything" << endl;
-    return;
-  }
+  // Set predef Start
+  mWorld->getRobot(mRobotIndex)->setConfig(mBodyDofs, mPredefStartConf);
+  viewer->DrawGLScene();
+}
+
+/// Button 2
+void planningTab::onButton2(wxCommandEvent & _evt) {
+
+}
+
+/**
+ * @function Button 3
+ * @brief Prev Step
+ */
+void planningTab::onButton3(wxCommandEvent & _evt) {
+ 
+  if (path_index < 0)
+    path_index = 0;
+  else if (path_index >= computed_path.size())
+    path_index = computed_path.size()-1;
   
-  Eigen::Matrix<double, 6, 1> pose; 
-  pose << 0.30, -0.30, 0.83, 0.0, 0.0, 0.0;
-  orangeCube->setRootTransform(pose);
-  pose << 0.30, -0.30, 0.935, 0.0, 0.0, 0.0;
-  yellowCube->setRootTransform(pose);
-
+  // Set configuration
+  mWorld->getRobot(mRobotIndex)->setConfig( mBodyDofs, computed_path[path_index] );
+  std::cout << "Configuration at path index "<< path_index<<std::endl;
+  std::cout << computed_path[path_index].transpose() <<std::endl;
   viewer->DrawGLScene();
+
+  // Update path index
+  path_index = path_index-mPathDelta;  
+  
 }
 
-
-/// Show the currently set start configuration
-void planningTab::onButtonShowStart(wxCommandEvent & _evt) {
-  cout << "Showing start conf for right arm: " << mStartConf.transpose() << endl;
-  mWorld->getRobot(mRobotIndex)->setConfig(mArmDofs, mStartConf);
+/**
+ * @function Button 4
+ * @brief Next Step
+ */
+void planningTab::onButton4(wxCommandEvent & _evt) {
+  
+  if (path_index < 0)
+    path_index = 0;
+  else if (path_index >= computed_path.size())
+    path_index = computed_path.size()-1;
+  
+  // Set configuration
+  mWorld->getRobot(mRobotIndex)->setConfig(mBodyDofs, computed_path[path_index]);
+  std::cout << "Configuration at path index "<< path_index<<std::endl;
+  std::cout << computed_path[path_index].transpose()<<std::endl;  
   viewer->DrawGLScene();
-}
-
-
-/// Show the currently set goal configuration
-void planningTab::onButtonShowGoal(wxCommandEvent & _evt) {
-  cout << "Showing goal conf for right arm: " << mGoalConf.transpose() << endl;
-  mWorld->getRobot(mRobotIndex)->setConfig(mArmDofs, mGoalConf);
-  viewer->DrawGLScene();
-}
-
-void
-planningTab::onButtonPrevStep(wxCommandEvent & _evt)
-{
-	if (path_index < 0)
-		path_index = 0;
-	else if (path_index >= computed_path.size())
-		path_index = computed_path.size()-1;
-
-	//mWorld->getRobot(mRobotIndex)->setConfig(mTestArmDofs, computed_path[path_index]);
-
-	mWorld->getRobot(mRobotIndex)->setConfig(mArmDofs, computed_path[path_index]);
-
-	//mWorld->getRobot(mRobotIndex)->setConfig(mBothLegsDofs, computed_path[path_index]);
-
-	//mWorld->getRobot(mRobotIndex)->setConfig(mQuadDofs, computed_path[path_index]);
-
-	viewer->DrawGLScene();
-	path_index = path_index-100;
-}
-
-void
-planningTab::onButtonNextStep(wxCommandEvent & _evt)
-{
-	if (path_index < 0)
-		path_index = 0;
-	else if (path_index >= computed_path.size())
-		path_index = computed_path.size()-1;
-
-	//mWorld->getRobot(mRobotIndex)->setConfig(mTestArmDofs, computed_path[path_index]);
-	mWorld->getRobot(mRobotIndex)->setConfig(mArmDofs, computed_path[path_index]);
-	//mWorld->getRobot(mRobotIndex)->setConfig(mBothLegsDofs, computed_path[path_index]);
-
-	//mWorld->getRobot(mRobotIndex)->setConfig(mQuadDofs, computed_path[path_index]);
-
-	viewer->DrawGLScene();
-
-	path_index = path_index+100;
+  
+  // Update path index
+  path_index = path_index+ mPathDelta;
+  
 }
 
 /// Set initial dynamic parameters and call planner and controller
-void planningTab::onButtonPlan(wxCommandEvent & _evt)
-{
+void planningTab::onButtonPlan(wxCommandEvent & _evt) {
 
-  // Store the actuated joints (all except the first 6 which are only a convenience to locate the robot in the world)
-  std::vector<int> actuatedDofs(mWorld->getRobot(mRobotIndex)->getNumDofs() - 6);
-  for(unsigned int i = 0; i < actuatedDofs.size(); i++) {
-    actuatedDofs[i] = i + 6;
+  dynamics::SkeletonDynamics* ground = mWorld->getSkeleton("ground");
+
+  // Convert path into time-parameterized trajectory satisfying acceleration and velocity constraints
+  const Eigen::VectorXd maxVelocity = 10*0.6 * Eigen::VectorXd::Ones( mNumBodyDofs );
+  const Eigen::VectorXd maxAcceleration = 10*0.6 * Eigen::VectorXd::Ones( mNumBodyDofs );
+
+  TrajVector traj;
+  std::cout << "Planning with Matt's code" << std::endl;
+
+  fakerave::KinBody my_kbody;
+  computeTrajectory_zmp( traj, "myhubo.kinbody.xml", my_kbody );
+
+  printf("Finished computing trajectory \n");
+
+  std::list<Eigen::VectorXd> my_path;
+  TrajVector::iterator itTraj;
+  Eigen::VectorXd angles = Eigen::VectorXd::Zero( mNumBodyDofs );
+
+  // Get joint indices in Matt's code
+  std::vector<int> jointIndices( mNumBodyDofs );
+  int ind;
+  for (int i = 0; i < mNumBodyDofs; ++i) {
+    ind = my_kbody.lookupJoint( mBodyJointNames[i] );
+    
+    if ( ind != -1 ) {
+      jointIndices[i] = ind;
+    } else {
+      std::cout <<"Not found joint indice in Matt's code: JOINT "<<mBodyJointNames[i] <<std::endl;
+    }
+
   }
   
-  // Deactivate collision checking between the feet and the ground during planning
-  dynamics::SkeletonDynamics* ground = mWorld->getSkeleton("ground");
-  mWorld->mCollisionHandle->getCollisionChecker()->deactivatePair(mWorld->getRobot(mRobotIndex)->getNode("Body_LAR"), ground->getNode(1));
-  mWorld->mCollisionHandle->getCollisionChecker()->deactivatePair(mWorld->getRobot(mRobotIndex)->getNode("Body_RAR"), ground->getNode(1));
+  for (itTraj = traj.begin(); itTraj != traj.end(); ++itTraj) {
+
+    for (int i = 0; i < mNumBodyDofs; ++i) { 
+      angles[i] = (itTraj->angles)[ jointIndices[i] ];
+    }
+    
+    my_path.push_back(angles);
+    computed_path.push_back(angles);
+  }
   
-  // Define PD controller gains
-  Eigen::VectorXd kI = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
-  Eigen::VectorXd kP = 500.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
-  Eigen::VectorXd kD = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
-
-  // Define gains for the ankle PD
-  std::vector<int> ankleDofs(2);
-  ankleDofs[0] = 27;
-  ankleDofs[1] = 28;
-  const Eigen::VectorXd anklePGains = -1000.0 * Eigen::VectorXd::Ones(2);
-  const Eigen::VectorXd ankleDGains = -200.0 * Eigen::VectorXd::Ones(2);
-
-  // Set robot to start configuration
-  mWorld->getRobot(mRobotIndex)->setConfig(mArmDofs, mStartConf);
-
-  // Create controller
-  mController = new planning::Controller(mWorld->getRobot(mRobotIndex), actuatedDofs, kP, kD, ankleDofs, anklePGains, ankleDGains);
-
-  // Call path planner
-  planning::PathPlanner<> pathPlanner(*mWorld);
-  std::list<Eigen::VectorXd> path;
-
-  //if(!pathPlanner.planPath(mRobotIndex, mArmDofs, mStartConf, mGoalConf, path)) {
-  //{
-  //	  std::cout << "Path planner could not find a path." << std::endl;
-  //}
-  //else {
-    // Call path shortener
-    //planning::PathShortener pathShortener(mWorld, mRobotIndex, mArmDofs);
-    //pathShortener.shortenPath(path);
-
-    mWorld->getRobot(mRobotIndex)->update();
-
-    // Convert path into time-parameterized trajectory satisfying acceleration and velocity constraints
-    const Eigen::VectorXd maxVelocity = 10*0.6 * Eigen::VectorXd::Ones(mArmDofs.size());
-    const Eigen::VectorXd maxAcceleration = 10*0.6 * Eigen::VectorXd::Ones(mArmDofs.size());
-
-    TrajVector traj;
-    std::cout << "Yay" << std::endl;
-    const string hArmNodes[] = {"LSP", "LSR", "LSY", "LEP", "LWY", "LWP",
-  		  	  	  	  	  	 "RSP", "RSR", "RSY", "REP", "RWY", "RWP",
-  		  	  	  	  	     "LHY", "LHR", "LHP", "LKP", "LAP", "LAR",
-  		  	  	  	  	     "RHY", "RHR", "RHP", "RKP", "RAP", "RAR"};
-
-    fakerave::KinBody my_kbody;
-	computeTrajectory_zmp(traj, "myhubo.kinbody.xml", my_kbody);
-
-	std::list<Eigen::VectorXd> my_path;
-	TrajVector::iterator itTraj;
-	Eigen::VectorXd angles = Eigen::VectorXd::Zero(24);
-	//(HUBO_JOINT_COUNT);
-	int jj = 0;
-
-	for (itTraj = traj.begin(); itTraj != traj.end(); ++itTraj)
-	{
-		for (int i = 0; i < 24; ++i)
-		{
-			 //std::cout <<  (itTraj->angles)[i] << ",";
-			 jj = my_kbody.lookupJoint(hArmNodes[i]);
-
-			 if (jj!=-1)
-			 {
-				 angles[i] = (itTraj->angles)[jj];
-			 	 std::cout <<  angles[i] << ",";
-			 }
-		}
-		std::cout << std::endl;
-
-		my_path.push_back(angles);
-		computed_path.push_back(angles);
-	}
-
-/*
-	typedef struct zmp_traj_element {
-	  double angles[HUBO_JOINT_COUNT];
-	  // XYZ pos/vel/accel in frame of stance ANKLE
-	  // (translated up ~10cm from foot -- i.e. z coord is 10cm less)
-	  double com[3][3];
-	  double zmp[2]; // XY of zmp in frame of stance ANKLE
-	  double forces[2][3]; // right/left predicted normal forces
-	  double torque[2][3]; // right/left predicted moments XYZ
-	  // TODO: add orientation for IMU
-	  stance_t stance;
-	} zmp_traj_element_t;
-*/
-	int num_elements = traj.size();
-
-	std::cout << "num_steps: " << num_elements << std::endl;
-
-	//for (int kk =0; kk < num_elements; ++kk )
-	//{
-	//	std::cout << "step : "<< kk << "(" << traj[kk].zmp[0] << "," << traj[kk].zmp[1] << ")\n";
-	//}
-
-
-    planning::Trajectory* trajectory = new planning::Trajectory(my_path, maxVelocity, maxAcceleration);
-
-
-    std::cout << "-- Trajectory duration: " << trajectory->getDuration() << endl;
-    mController->setTrajectory(trajectory, 0.0, mArmDofs);
-  //}
   
-  // Reactivate collision of feet with floor
-  mWorld->mCollisionHandle->getCollisionChecker()->activatePair(mWorld->getRobot(mRobotIndex)->getNode("Body_LAR"), ground->getNode(1));
-  mWorld->mCollisionHandle->getCollisionChecker()->activatePair(mWorld->getRobot(mRobotIndex)->getNode("Body_RAR"), ground->getNode(1));
+  int num_elements = traj.size();
+  
+  std::cout << "num_steps: " << num_elements << std::endl;
+  
+  
+  planning::Trajectory* trajectory = new planning::Trajectory(my_path, maxVelocity, maxAcceleration);
+  std::cout << "-- Trajectory duration: " << trajectory->getDuration() << endl;
+ 
 }
 
 // Local Variables:
