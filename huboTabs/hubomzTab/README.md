@@ -1,34 +1,17 @@
 hubomz
 ======
 
-Hubo planning, control, and visualziation software
+Hubo planning, control, and visualization software
+Original code from Matt Zucker. Adapted to be used with DART/GRIP
 
-Please contact Matt Zucker <mzucker1@swarthmore.edu> with questions,
-comments, or rants.
-
-Some IK/FK code from Hubo Motion library -
-https://github.com/hubo/hubo-motion-rt
 
 Building
 ========
+The usual cmake and make routine. However there is one more thing: To run the software, 
+you will need an OpenRAVE model of the Hubo plus. Get the openHubo package from 
 
-To build the software, you will need these libraries:
- 
-  - GLUT
-  - eigen3
-  - expat
-  - qt4 (optional, but required for calibration GUI)
+https://github.com/daslrobotics/openHubo
 
-You must install cmake to build the software as well.  To build:
-
-    cd /path/to/hubomz
-    mkdir build
-    cd build
-    cmake .. -DCMAKE_BUILD_TYPE=Release
-    make
-
-To run the software, you will need an OpenRAVE model of the Hubo plus.
-Get the openHubo package from https://github.com/daslrobotics/openHubo
 and patch it using the huboplus.patch in the root directory of this
 project.
 
@@ -41,20 +24,23 @@ directory of this repository.
     cd /path/to/hubomz
     ln -s /path/to/openHubo/robots/huboplus
    
-Now, you can run the software, for instance:
+Notice that in planningTab I have added hardcoded the path to myhubo.kinbody.xml as
 
-    cd /path/to/hubomz/build
-    ./zmpdemo -g ../myhubo.kinbody.xml
-    
-On the mac, instead run
+"../myhubo.kinbody.xml"
 
-    ./zmpdemo.app/Contents/MacOS/zmpdemo -g ../myhubo.kinbody.xml
+I made this since I usually run the executable from a build folder and the xml file is on the
+source directory. If you want to change this local path, change line 414 of planninTab
+to suit your preferences.
+
+Run Tab
+======
+1. Load a world with a huboplus on it
+2. Press Set start (to set initial configuration)
+3. Press run
+
+Run will generate a trajectory with 1000 waypoints and will store them in a text file named traj.txt.
+
+4. If you want to see the movement, press Next Step to advance 10 waypoints or Prev Step to go back 10 waypoints. You can change this by changing mPathDelta to another value in PlanningTab
+ToDo: Pass the movements to the  Timeline , make the movement w.r.t. the standing foot
 
 
-Tests
-=====
-
-A few tests can automatically be run. After you've successfully run `make`, do:
-
-    make
-    ctest
