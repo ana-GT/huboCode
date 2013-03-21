@@ -6,7 +6,7 @@
 #ifdef HAVE_HUBO_ACH
 #include <hubo.h>
 #else
-#include "hubomz/hubo_joint_count.h"
+#include "src/hubo_joint_count.h"
 #endif
 
 enum stance_t {

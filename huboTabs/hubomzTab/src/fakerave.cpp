@@ -4,8 +4,8 @@
 /********************************************************/
 
 #include "fakerave.h"
-#include "mzcommon/strutils.h"
-#include "mzcommon/glstuff.h"
+#include <mzcommon/strutils.h>
+#include <mzcommon/glstuff.h>
 #include <Eigen/Dense>
 
 namespace fakerave {

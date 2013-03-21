@@ -1,0 +1,16 @@
+set grid
+set grid
+
+set xlabel "iteration"
+set ylabel "pos (degrees)"
+plot "traj.txt" using 1:2 title "LSP" with lines, "traj.txt" using 1:3 title "LSR" with lines, "traj.txt" using 1:4 title "LSY" with lines, "traj.txt" using 1:5 title "LEP" with lines, "traj.txt" using 1:6 title "LWY" with lines, "traj.txt" using 1:7 title "LWP" with lines
+
+plot "traj.txt" using 1:8 title "RSP" with lines, "traj.txt" using 1:9 title "RSR" with lines, "traj.txt" using 1:10 title "RSY" with lines, "traj.txt" using 1:11 title "REP" with lines, "traj.txt" using 1:12 title "RWY" with lines, "traj.txt" using 1:13 title "RWP" with lines
+
+plot "traj.txt" using 1:14 title "LHY" with lines, "traj.txt" using 1:15 title "LHR" with lines, "traj.txt" using 1:16 title "LHP" with lines, "traj.txt" using 1:17 title "LKP" with lines, "traj.txt" using 1:18 title "LAP" with lines, "traj.txt" using 1:19 title "LAR" with lines
+
+plot "traj.txt" using 1:20 title "RHY" with lines, "traj.txt" using 1:21 title "RHR" with lines, "traj.txt" using 1:22 title "RHP" with lines, "traj.txt" using 1:23 title "RKP" with lines, "traj.txt" using 1:24 title "RAP" with lines, "traj.txt" using 1:25 title "RAR" with lines
+
+plot "traj.txt" using 1:2 title "LSP" with lines, "traj.txt" using 1:3 title "LSR" with lines, "traj.txt" using 1:4 title "LSY" with lines, "traj.txt" using 1:5 title "LEP" with lines, "traj.txt" using 1:6 title "LWY" with lines, "traj.txt" using 1:7 title "LWP" with lines, "traj.txt" using 1:8 title "RSP" with lines, "traj.txt" using 1:9 title "RSR" with lines, "traj.txt" using 1:10 title "RSY" with lines, "traj.txt" using 1:11 title "REP" with lines, "traj.txt" using 1:12 title "RWY" with lines, "traj.txt" using 1:13 title "RWP" with lines
+
+plot "traj.txt" using 1:14 title "LHY" with lines, "traj.txt" using 1:15 title "LHR" with lines, "traj.txt" using 1:16 title "LHP" with lines, "traj.txt" using 1:17 title "LKP" with lines, "traj.txt" using 1:18 title "LAP" with lines, "traj.txt" using 1:19 title "LAR" with lines, "traj.txt" using 1:20 title "RHY" with lines, "traj.txt" using 1:21 title "RHR" with lines, "traj.txt" using 1:22 title "RHP" with lines, "traj.txt" using 1:23 title "RKP" with lines, "traj.txt" using 1:24 title "RAP" with lines, "traj.txt" using 1:25 title "RAR" with lines

@@ -6,17 +6,13 @@
 #ifndef _FAKERAVE_H_
 #define _FAKERAVE_H_
 
-#include "mzcommon/Transform3.h"
-#include "mzcommon/TriMesh3.h"
+#include <mzcommon/Transform3.h>
+#include <mzcommon/TriMesh3.h>
 #include <fstream>
 #include <vector>
 #include <assert.h>
 #include <float.h>
 #include <Eigen/Core>
-
-#include "mzcommon/vec4.h"
-#include "mzcommon/quat.h"
-
 
 namespace fakerave {
 

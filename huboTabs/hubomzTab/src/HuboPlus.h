@@ -6,8 +6,8 @@
 #ifndef _HUBOPLUS_H_
 #define _HUBOPLUS_H_
 
-#include "fakerave.h"
-#include "HuboKin.h"
+#include "src/fakerave.h"
+#include "src/HuboKin.h"
 
 #ifdef HAVE_HUBO_ACH
 #include <hubo.h>
@@ -33,6 +33,8 @@ public:
     IK_MODE_WORLD,   // manipulator specified relative to world
     IK_MODE_SUPPORT, // manipulator specfied relative to world, and holding up robot
   };
+  
+  static const char* ikModeString(int i);
   
   class KState {
   public:

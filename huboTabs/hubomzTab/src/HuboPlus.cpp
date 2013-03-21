@@ -4,8 +4,8 @@
 /********************************************************/
 
 #include "HuboPlus.h"
-#include "mzcommon/glstuff.h"
-#include "mzcommon/TimeUtil.h"
+#include <mzcommon/glstuff.h>
+#include <mzcommon/TimeUtil.h>
 
 #define assert_equal(x, y) _assert_equal((x), (y), #x, #y, __FILE__, __LINE__)
 
@@ -15,6 +15,26 @@
 
 using namespace fakerave;
 using namespace HK;
+
+  enum IKMode {
+    IK_MODE_FREE,    // you can do whatever you want to these joint angles
+    IK_MODE_FIXED,   // joint angles already specified, do not mess with them
+    IK_MODE_BODY,    // manipulator specified relative to body
+    IK_MODE_WORLD,   // manipulator specified relative to world
+    IK_MODE_SUPPORT, // manipulator specfied relative to world, and holding up robot
+  };
+  
+const char* HuboPlus::ikModeString(int i) {
+  switch (i) {
+  case IK_MODE_FREE:    return "free";
+  case IK_MODE_FIXED:   return "fixed";
+  case IK_MODE_BODY:    return "body";
+  case IK_MODE_WORLD:   return "world";
+  case IK_MODE_SUPPORT: return "support";
+  default: return "[INVALID]";
+  }
+}
+
 
 static inline void _assert_equal(real x, real y, 
                                  const char* xstr, 
@@ -256,6 +276,23 @@ HuboPlus::HuboPlus(const std::string& filename):
     } else {
       lo = -M_PI/2;
       hi = M_PI/2;
+    }
+  }
+
+  std::cerr << "leg_l1 = " << kc.leg_l1 << "; // neck -> waist Z\n";
+  std::cerr << "leg_l2 = " << kc.leg_l2 << "; // waist -> hip Y\n";
+  std::cerr << "leg_l3 = " << kc.leg_l3 << "; // waist -> hip Z\n";
+  std::cerr << "leg_l4 = " << kc.leg_l4 << "; // hip -> knee Z\n";
+  std::cerr << "leg_l5 = " << kc.leg_l5 << "; // knee -> ankle Z\n";
+  std::cerr << "leg_l6 = " << kc.leg_l6 << "; // ankle to foot Z\n\n";
+
+  std::cerr << "leg_limits << \n";
+  for (size_t i=0; i<jidx.size(); ++i) {
+    std::cerr << "  " << kc.leg_limits(i, 0) << ", " << kc.leg_limits(i, 1);
+    if (i+1 == jidx.size()) {
+      std::cerr << ";\n\n";
+    } else {
+      std::cerr << ",\n";
     }
   }
 
@@ -659,7 +696,7 @@ void HuboPlus::computeGroundReaction(const vec3& comPos,
 
     // Find the displacement between the feet
     vec3 ry = footXforms[0].translation() - footXforms[1].translation();
-    assert(ry.z() == 0);
+    assert( fabs(ry.z()) < 1e-4 );
 
     // Let d be the distance between the feet
     real d = ry.norm();

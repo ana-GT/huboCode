@@ -43,16 +43,7 @@
 #include <Tabs/GRIPTab.h>
 #include "zmp/hubo-zmp.h"
 
-
-typedef std::vector< zmp_traj_element_t > TrajVector;
-
-
 namespace planning { class Controller; }
-
-#include "hubomz/fakerave.h"
-
-int
-computeTrajectory_zmp(TrajVector &traj, const char* hubofile, fakerave::KinBody &my_kbody);
 
 class planningTab : public GRIPTab
 {
@@ -88,6 +79,7 @@ public:
 
   int path_index;
   int mPathDelta;
+  std::vector<Eigen::VectorXd> mMzPath;
   std::vector<Eigen::VectorXd> computed_path;
 
   DECLARE_DYNAMIC_CLASS(planningTab)
