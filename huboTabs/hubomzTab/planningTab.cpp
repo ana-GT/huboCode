@@ -52,8 +52,7 @@
 #include <robotics/Robot.h>
 #include <planning/PathPlanner.h>
 #include <planning/PathShortener.h>
-#include <planning/Trajectory.h>
-#include <planning/Path.h>
+#include <planning/PathFollowingTrajectory.h>
 #include "Controller.h"
 
 using namespace std;
@@ -632,6 +631,18 @@ void planningTab::onButtonSetController(wxCommandEvent & _evt) {
     return;
   }
 
+  // Create a trajectory out of mMzPath
+  const Eigen::VectorXd maxVel = 0.6*Eigen::VectorXd::Ones( mBodyDofs.size() );
+  const Eigen::VectorXd maxAcc = 0.6*Eigen::VectorXd::Ones( mBodyDofs.size() );
+  std::list<Eigen::VectorXd> path;
+  for( int i = 0; i < mMzPath.size(); ++i ) {
+    path.push_back( mMzPath[i] );
+  }
+  planning::Trajectory* trajectory = new planning::PathFollowingTrajectory( path,
+									    maxVel,
+									    maxAcc );
+  std::cout << " ** Trajectory duration: "<< trajectory->getDuration() << std::endl;
+
   // Store the actuated joints (all except the first 6 which are only a convenience to locate the robot in the world)
   std::vector<int> actuatedDofs(mWorld->getRobot(mRobotIndex)->getNumDofs() - 6);
   for(unsigned int i = 0; i < actuatedDofs.size(); i++) {
@@ -640,19 +651,20 @@ void planningTab::onButtonSetController(wxCommandEvent & _evt) {
   
   // Define PD controller gains
   Eigen::VectorXd kI = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
-  Eigen::VectorXd kP = 500.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
+  Eigen::VectorXd kP = 750.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs()); // 500
   Eigen::VectorXd kD = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
 
   // Define gains for the ankle PD
   std::vector<int> ankleDofs(2);
   ankleDofs[0] = 27;
   ankleDofs[1] = 28;
-  const Eigen::VectorXd anklePGains = -1000.0 * Eigen::VectorXd::Ones(2);
-  const Eigen::VectorXd ankleDGains = -200.0 * Eigen::VectorXd::Ones(2);
+  // ANklePGains were -1000 and -200
+  const Eigen::VectorXd anklePGains = -1500.0 * Eigen::VectorXd::Ones(2);
+  const Eigen::VectorXd ankleDGains = -100.0 * Eigen::VectorXd::Ones(2);
 
   // Put the robot near the floor (hacky, I know)
   Eigen::VectorXd rootPose = mWorld->getRobot( mRobotIndex )->getRootTransform();
-  rootPose(2) = 0.94; // z
+  rootPose(2) = 0.92; // z
   mWorld->getRobot( mRobotIndex )->setRootTransform( rootPose );
   
   // Set the robot to start configuration of waypoints
@@ -660,22 +672,13 @@ void planningTab::onButtonSetController(wxCommandEvent & _evt) {
   mWorld->getRobot( mRobotIndex )->update();
 
   // Create controller
-  mController = new Controller( mWorld->getRobot(mRobotIndex), 
-				actuatedDofs, 
-				kP, kD, ankleDofs, 
-				anklePGains, ankleDGains);
+  mController = new planning::Controller( mWorld->getRobot(mRobotIndex), 
+					  actuatedDofs, 
+					  kP, kD, ankleDofs, 
+					  anklePGains, ankleDGains);
 
 
-  // Convert path into time-parameterized trajectory satisfying acceleration and velocity constraints
- std:vector<double> nominalVels( mBodyDofs.size() );
-  for( int i = 0; i < mBodyDofs.size(); ++i ) {
-    nominalVels[i] = 0.3;
-  }
-
-  double dt = 0.005; // 200 Hz
-  mController->setWaypoints( mMzPath, mBodyDofs,
-			     nominalVels,
-			     0.0, dt );
+  mController->setTrajectory( trajectory, 0.0, mBodyDofs );
   
 }
 

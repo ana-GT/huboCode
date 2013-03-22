@@ -1,142 +1,89 @@
 /**
  * @file Controller.cpp
- * @brief Controller for waypoints input and frequency
- * @author
+ * @author T. Kunz
  */
+
 #include "Controller.h"
 #include <dynamics/SkeletonDynamics.h>
+#include <planning/Trajectory.h>
 #include <kinematics/Dof.h>
 #include <iostream>
 #include <dynamics/BodyNodeDynamics.h>
 #include <utils/UtilsMath.h>
 
+using namespace std;
+using namespace Eigen;
 
-/**
- * @function Controller
- * @brief Constructor
- */
-Controller::Controller( dynamics::SkeletonDynamics* _skel,
-			const std::vector<int> &_actuatedDofs,
-			const Eigen::VectorXd &_Kp,
-			const Eigen::VectorXd &_Kd,
-			const std::vector<int> &_ankleDofs,
-			const Eigen::VectorXd &_Kp_Ankle,
-			const Eigen::VectorXd &_Kd_Ankle ) :
-  mSkel( _skel ),
-  mKp( _Kp.asDiagonal() ),
-  mKd( _Kd.asDiagonal() ),
-  mAnkleDofs( _ankleDofs ),
-  mKp_Ankle( _Kp_Ankle ),
-  mKd_Ankle( _Kd_Ankle )
+namespace planning {
+
+Controller::Controller(dynamics::SkeletonDynamics* _skel, const vector<int> &_actuatedDofs,
+                       const VectorXd &_kP, const VectorXd &_kD, const vector<int> &_ankleDofs, const VectorXd &_anklePGains, const VectorXd &_ankleDGains) :
+    mSkel(_skel),
+    mKp(_kP.asDiagonal()),
+    mKd(_kD.asDiagonal()),
+    mAnkleDofs(_ankleDofs),
+    mAnklePGains(_anklePGains),
+    mAnkleDGains(_ankleDGains),
+    mTrajectory(NULL)
 {
-  const int nDof = mSkel->getNumDofs();
-  mSelectionMatrix = Eigen::MatrixXd::Zero( nDof, nDof );
-  for( int i = 0; i < _actuatedDofs.size(); ++i ) {
-    mSelectionMatrix( _actuatedDofs[i], _actuatedDofs[i] ) = 1.0;
-  }
+    const int nDof = mSkel->getNumDofs();
 
-  // Set desired dof to the current pose (As the robot is when you create the controller pointer)
-  mDesiredDofs.resize( nDof );
-  for( int i = 0; i < nDof; ++i ) {
-    mDesiredDofs[i] = mSkel->getDof(i)->getValue();
-  }
-
-  // Not sure what this does but Tobi put it there
-  Eigen::Vector3d com = mSkel->getWorldCOM();
-  double cop = 0.0;
-  mPreOffset = com[0] - cop;
-}
-
-/**
- * @function ~Controller
- * @brief destructor
- */
-Controller::~Controller() {
-
-}
-
-/**
- * @function setWaypoints
- * @brief Set the waypoints the joints will go trhough at each time step
- */	   
-void Controller::setWaypoints( std::vector<Eigen::VectorXd> _waypoints,
-			       const std::vector<int> &_dofs,
-			       const std::vector<double> &_nominalWaypointVelocities,
-			       double _startTime,
-			       double _dt ) {
-
-  mWaypointDofs = _dofs;
-  mStartTime = _startTime;
-  mWaypoints = _waypoints;
-  mNumWaypoints = mWaypoints.size();
-  mdt = _dt;
-  mNominalWaypointVelocities = _nominalWaypointVelocities;
-
-}
-  
-/**
- * @function getTorques
- * @brief
- */
-Eigen::VectorXd Controller::getTorques( const Eigen::VectorXd &_dof,
-					const Eigen::VectorXd &_dofVel,
-					double _time ) {
-  
-  Eigen::VectorXd desiredDofVels = VectorXd::Zero( mSkel->getNumDofs() );
-  
-  double currentTime = _time - mStartTime;
-  int currentWaypoint = (int) ( currentTime / mdt );
-  if( mWaypoints.size() > 0 && 
-      currentTime >= 0.0 & 
-      currentWaypoint < mNumWaypoints ) {
-    
-    for(unsigned int i = 0; i < mWaypointDofs.size(); i++) {
-      mDesiredDofs( mWaypointDofs[i] ) = mWaypoints[ currentWaypoint ](i);
-      desiredDofVels( mWaypointDofs[i] ) = mNominalWaypointVelocities[i];
+    mSelectionMatrix = MatrixXd::Zero(nDof, nDof);
+    for (int i = 0; i < _actuatedDofs.size(); i++) {
+        mSelectionMatrix(_actuatedDofs[i], _actuatedDofs[i]) = 1.0;
     }
-  }
-  
-  Eigen::VectorXd torques;
-  const double mTimestep = mdt;
-  
-  // SPD controller
-  // J. Tan, K. Liu, G. Turk. Stable Proportional-Derivative Controllers. IEEE Computer Graphics and Applications, Vol. 31, No. 4, pp 34-44, 2011.
-  MatrixXd invM = (mSkel->getMassMatrix() + mKd * mTimestep).inverse();
-  VectorXd p = -mKp * (_dof - mDesiredDofs + _dofVel * mTimestep);
-  VectorXd d = -mKd * (_dofVel - desiredDofVels);
-  VectorXd qddot = invM * (-mSkel->getCombinedVector() + p + d);
-  torques = p + d - mKd * qddot * mTimestep;
-  
-  // ankle strategy for sagital plane
-  Vector3d com = mSkel->getWorldCOM();
-  double cop = 0.0;
-  double offset = com[0] - cop;
-  
-  for(unsigned int i = 0; i < mAnkleDofs.size(); i++) {
-    torques[mAnkleDofs[i]] = - mKp_Ankle[i] * offset - mKd_Ankle[i] * (offset - mPreOffset) / mTimestep;
-  }
-  
-  mPreOffset = offset;
 
-  return mSelectionMatrix * torques;
-  
-}
+    mDesiredDofs.resize(nDof);
+    for (int i = 0; i < nDof; i++) {
+        mDesiredDofs[i] = mSkel->getDof(i)->getValue();
+    }
 
-/**
- * @function
- * @brief
- */
-Eigen::Vector3d Controller::evalAngMomentum( const Eigen::VectorXd &_dofVel ) {
-
-}
-
-/**
- * @function
- * @brief
- */
-Eigen::VectorXd Controller::adjustAngMomentum( Eigen::VectorXd _deltaMomentum,
-					       Eigen::VectorXd _controlledAxis ) {
-
+    Vector3d com = mSkel->getWorldCOM();
+    double cop = 0.0;
+    mPreOffset = com[0] - cop;
 }
 
 
+void Controller::setTrajectory(const Trajectory* _trajectory, double _startTime, const std::vector<int> &_dofs) {
+    mTrajectoryDofs = _dofs;
+    mTrajectory = _trajectory;
+    mStartTime = _startTime;
+}
+
+
+VectorXd Controller::getTorques(const VectorXd& _dof, const VectorXd& _dofVel, double _time) {
+    Eigen::VectorXd desiredDofVels = VectorXd::Zero(mSkel->getNumDofs());
+
+    if(mTrajectory && _time - mStartTime >= 0.0 & _time - mStartTime <= mTrajectory->getDuration()) {
+        for(unsigned int i = 0; i < mTrajectoryDofs.size(); i++) {
+            mDesiredDofs[mTrajectoryDofs[i]] = mTrajectory->getPosition(_time - mStartTime)[i];
+            desiredDofVels[mTrajectoryDofs[i]] = mTrajectory->getVelocity(_time - mStartTime)[i];
+        }
+    }
+    
+    VectorXd torques;
+    const double mTimestep = 0.001;
+
+    // SPD controller
+    // J. Tan, K. Liu, G. Turk. Stable Proportional-Derivative Controllers. IEEE Computer Graphics and Applications, Vol. 31, No. 4, pp 34-44, 2011.
+    MatrixXd M = mSkel->getMassMatrix() + mKd * mTimestep;
+    VectorXd p = -mKp * (_dof - mDesiredDofs + _dofVel * mTimestep);
+    VectorXd d = -mKd * (_dofVel - desiredDofVels);
+    VectorXd qddot = M.ldlt().solve(-mSkel->getCombinedVector() + p + d);
+    torques = p + d - mKd * qddot * mTimestep;
+
+    // ankle strategy for sagital plane
+    Vector3d com = mSkel->getWorldCOM();
+    double cop = 0.0;
+    double offset = com[0] - cop;
+
+    for(unsigned int i = 0; i < mAnkleDofs.size(); i++) {
+        torques[mAnkleDofs[i]] = - mAnklePGains[i] * offset - mAnkleDGains[i] * (offset - mPreOffset) / mTimestep;
+    }
+
+    mPreOffset = offset;
+
+    return mSelectionMatrix * torques;
+}
+
+}
