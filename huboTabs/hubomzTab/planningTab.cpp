@@ -209,11 +209,6 @@ std::string planningTab::mBodyDofNames[] = {"Body_LSP", "Body_LSR", "Body_LSY", 
 					    "Body_LHY", "Body_LHR", "Body_LHP", "Body_LKP", "Body_LAP", "Body_LAR",
 					    "Body_RHY", "Body_RHR", "Body_RHP", "Body_RKP", "Body_RAP", "Body_RAR"};
 
-/*std::string planningTab::mBodyJointNames[] = {"LSP", "LSR", "LSY", "LEP", "LWY", "LWP",
-					      "RSP", "RSR", "RSY", "REP", "RWY", "RWP",
-					      "LHY", "LHR", "LHP", "LKP", "LAP", "LAR",
-					      "RHY", "RHR", "RHP", "RKP", "RAP", "RAR"}; */
-
 std::string planningTab::mBodyJointNames[] = {"LSP", "LSR", "LSY", "LEP", "LWY", "LWP",
 					      "RSP", "RSR", "RSY", "REP", "RWY", "RWP",
 					      "LHY", "LHR", "LHP", "LKP", "LAP", "LAR",
@@ -225,7 +220,8 @@ enum DynamicSimulationTabEvents {
   id_button_2,
   id_button_3,
   id_button_4,
-  id_button_Plan
+  id_button_Plan,
+  id_button_SetController
 };
 
 // Handler for events
@@ -235,6 +231,7 @@ EVT_COMMAND (id_button_2, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton2)
 EVT_COMMAND (id_button_3, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton3)
 EVT_COMMAND (id_button_4, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButton4)
 EVT_COMMAND (id_button_Plan, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonPlan)
+EVT_COMMAND (id_button_SetController, wxEVT_COMMAND_BUTTON_CLICKED, planningTab::onButtonSetController)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(planningTab, GRIPTab)
@@ -261,6 +258,7 @@ GRIPTab(parent, id, pos, size, style)
   ss2BoxS->Add(new wxButton(this, id_button_4, wxT("Next Step")), 0, wxALL, 1); 
 
   ss3BoxS->Add(new wxButton(this, id_button_Plan, wxT("Run")), 0, wxALL, 1); 
+  ss3BoxS->Add(new wxButton(this, id_button_SetController, wxT("Set Controller")), 0, wxALL, 1); 
 
   sizerFull->Add(ss1BoxS, 1, wxEXPAND | wxALL, 6);
   sizerFull->Add(ss2BoxS, 1, wxEXPAND | wxALL, 6);
@@ -290,18 +288,13 @@ void planningTab::GRIPEventSceneLoaded() {
   
   // Store the indices for the Body Dofs
   mBodyDofs.resize( mNumBodyDofs );
-	std::cout << "BodyDofs: " << std::endl;
+  std::cout << "BodyDofs: " << std::endl;
   for(int i = 0; i < mBodyDofs.size(); i++) {
     mBodyDofs[i] = mWorld->getRobot(mRobotIndex)->getNode( mBodyDofNames[i].c_str())->getDof(0)->getSkelIndex();
 		std::cout << " " << mBodyDofs[i];
   }
-	std::cout << std::endl;
-
-		// Checking with Joints
-		for( int i = 0 ; i < mBodyDofs.size(); ++i ) {
-		std::string nameNode = mWorld->getRobot(mRobotIndex)->getDof( mBodyDofs[i] )->getJoint()->getChildNode()->getName();
-		 std::cout << "Body node: "<< mBodyDofNames[i]<<  " and corresponding to dof is: "<< nameNode << std::endl;
-		}
+  std::cout << std::endl;
+  
 }
 
 
@@ -569,75 +562,121 @@ void planningTab::onButtonPlan(wxCommandEvent & _evt) {
 
   //////////////////////////////////////////////////////////////////////
   // have the walker run preview control and pass on the output
-
+  
   walker.bakeIt();
   // validateOutputData(traj);
-
+  
 /*
   if (show_gui) {
 
-    ZmpDemo demo(argc, argv, hplus, walker.traj);
-
-    demo.run();
-
+  ZmpDemo demo(argc, argv, hplus, walker.traj);
+  
+  demo.run();
+  
   }*/
-
-	// Save joints
-	std::vector<int> jointOrderFake( mNumBodyDofs );
-	std::cout << "The trajectory size was: "<< walker.traj.size() << std::endl;
-	// Got this from HuboPlus.cpp line 318 (hnames)
+  
+  // Save joints
+  std::vector<int> jointOrderFake( mNumBodyDofs );
+  std::cout << "The trajectory size was: "<< walker.traj.size() << std::endl;
+  // Got this from HuboPlus.cpp line 318 (hnames)
   // Still not sure why this is the way it is...but that is it so don't ask me
-	jointOrderFake[0] = 4;
-	jointOrderFake[1] = 5;
-	jointOrderFake[2] = 6;
-	jointOrderFake[3] = 7;
-	jointOrderFake[4] = 8;
-	jointOrderFake[5] = 10;
-
-	jointOrderFake[6] = 11;
-	jointOrderFake[7] = 12;
-	jointOrderFake[8] = 13;
-	jointOrderFake[9] = 14;
-	jointOrderFake[10] = 15;
-	jointOrderFake[11] = 17;
-
-	jointOrderFake[12] = 19;
-	jointOrderFake[13] = 20;
-	jointOrderFake[14] = 21;
-	jointOrderFake[15] = 22;
-	jointOrderFake[16] = 23;
-	jointOrderFake[17] = 24;
-
-	jointOrderFake[18] = 26;
-	jointOrderFake[19] = 27;
-	jointOrderFake[20] = 28;
-	jointOrderFake[21] = 29;
-	jointOrderFake[22] = 30;
-	jointOrderFake[23] = 31;
-
-	// Store path
-	FILE* pFile;
+  jointOrderFake[0] = 4; jointOrderFake[1] = 5;
+  jointOrderFake[2] = 6; jointOrderFake[3] = 7;
+  jointOrderFake[4] = 8; jointOrderFake[5] = 10;
+  
+  jointOrderFake[6] = 11; jointOrderFake[7] = 12;
+  jointOrderFake[8] = 13; jointOrderFake[9] = 14;
+  jointOrderFake[10] = 15; jointOrderFake[11] = 17;
+  
+  jointOrderFake[12] = 19; jointOrderFake[13] = 20;
+  jointOrderFake[14] = 21; jointOrderFake[15] = 22;
+  jointOrderFake[16] = 23; jointOrderFake[17] = 24;
+  
+  jointOrderFake[18] = 26; jointOrderFake[19] = 27;
+  jointOrderFake[20] = 28; jointOrderFake[21] = 29;
+  jointOrderFake[22] = 30; jointOrderFake[23] = 31;
+  
+  // Store path
+  FILE* pFile;
   pFile = fopen( "traj.txt", "w");
-
-	mMzPath.resize( walker.traj.size() );
-	for( int i = 0; i < walker.traj.size(); ++i ) {
-		Eigen::VectorXd waypoint = Eigen::VectorXd::Zero( mNumBodyDofs );
-
-		fprintf( pFile, "%d ", i );
-		for( int j = 0; j < mNumBodyDofs; ++j ) {
-			waypoint(j) = walker.traj[i].angles[ jointOrderFake[j] ];
-    	fprintf( pFile, "%.4f  ", waypoint(j) );
-		}		
-		fprintf(  pFile, "\n" );
-
-		mMzPath[i] = waypoint;
-	}
-
+  
+  mMzPath.resize( walker.traj.size() );
+  for( int i = 0; i < walker.traj.size(); ++i ) {
+    Eigen::VectorXd waypoint = Eigen::VectorXd::Zero( mNumBodyDofs );
+    
+    fprintf( pFile, "%d ", i );
+    for( int j = 0; j < mNumBodyDofs; ++j ) {
+      waypoint(j) = walker.traj[i].angles[ jointOrderFake[j] ];
+      fprintf( pFile, "%.4f  ", waypoint(j) );
+    }		
+    fprintf(  pFile, "\n" );
+    
+    mMzPath[i] = waypoint;
+  }
+  
   fclose( pFile );
+  
+  
+  std::cout << "Done and ready to step back and forth!" << std::endl;
+  
+}
+
+/**
+ * @function onButtonSetController
+ */
+void planningTab::onButtonSetController(wxCommandEvent & _evt) {
+
+  // If mMzPath has been filled up
+  if( mMzPath.size() <= 0 ) {
+    std::cout << "No Mz Path generated, exiting of controller!" << std::endl;
+    return;
+  }
+
+  // Store the actuated joints (all except the first 6 which are only a convenience to locate the robot in the world)
+  std::vector<int> actuatedDofs(mWorld->getRobot(mRobotIndex)->getNumDofs() - 6);
+  for(unsigned int i = 0; i < actuatedDofs.size(); i++) {
+    actuatedDofs[i] = i + 6;
+  }
+  
+  // Define PD controller gains
+  Eigen::VectorXd kI = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
+  Eigen::VectorXd kP = 500.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
+  Eigen::VectorXd kD = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
+
+  // Define gains for the ankle PD
+  std::vector<int> ankleDofs(2);
+  ankleDofs[0] = 27;
+  ankleDofs[1] = 28;
+  const Eigen::VectorXd anklePGains = -1000.0 * Eigen::VectorXd::Ones(2);
+  const Eigen::VectorXd ankleDGains = -200.0 * Eigen::VectorXd::Ones(2);
+
+  // Put the robot near the floor (hacky, I know)
+  Eigen::VectorXd rootPose = mWorld->getRobot( mRobotIndex )->getRootTransform();
+  rootPose(2) = 0.94; // z
+  mWorld->getRobot( mRobotIndex )->setRootTransform( rootPose );
+  
+  // Set the robot to start configuration of waypoints
+  mWorld->getRobot( mRobotIndex )->setConfig( mBodyDofs, mMzPath[0] );
+  mWorld->getRobot( mRobotIndex )->update();
+
+  // Create controller
+  mController = new Controller( mWorld->getRobot(mRobotIndex), 
+				actuatedDofs, 
+				kP, kD, ankleDofs, 
+				anklePGains, ankleDGains);
 
 
-	std::cout << "Done and ready to step back and forth!" << std::endl;
+  // Convert path into time-parameterized trajectory satisfying acceleration and velocity constraints
+ std:vector<double> nominalVels( mBodyDofs.size() );
+  for( int i = 0; i < mBodyDofs.size(); ++i ) {
+    nominalVels[i] = 0.3;
+  }
 
+  double dt = 0.005; // 200 Hz
+  mController->setWaypoints( mMzPath, mBodyDofs,
+			     nominalVels,
+			     0.0, dt );
+  
 }
 
 // Local Variables:

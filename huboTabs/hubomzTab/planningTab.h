@@ -42,8 +42,8 @@
 #include <vector>
 #include <Tabs/GRIPTab.h>
 #include "zmp/hubo-zmp.h"
+#include "Controller.h"
 
-namespace planning { class Controller; }
 
 class planningTab : public GRIPTab
 {
@@ -60,9 +60,9 @@ public:
   void onButton3(wxCommandEvent & _evt);
   void onButton4(wxCommandEvent & _evt);
   void onButtonPlan(wxCommandEvent & _evt);
+  void onButtonSetController(wxCommandEvent & _evt);
 
-
-  planning::Controller* mController;
+  Controller* mController;
   
   int mRobotIndex;
   std::vector<int> mBodyDofs;

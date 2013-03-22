@@ -1,3 +1,8 @@
+/**
+ * @file Controller.h
+ * @author T. Kunz
+ */
+
 #pragma once
 
 #include <vector>
@@ -5,37 +10,51 @@
 
 namespace dynamics { class SkeletonDynamics; }
 
-namespace planning {
-
-class Trajectory;
-
 class Controller {
-public:
-    Controller(dynamics::SkeletonDynamics* _skel, const std::vector<int> &_actuatedDofs,
-               const Eigen::VectorXd &_kP, const Eigen::VectorXd &_kD, const std::vector<int> &_ankleDofs, const Eigen::VectorXd &_anklePGains, const Eigen::VectorXd &_ankleDGains);
-    virtual ~Controller() {};
 
-    void setTrajectory(const Trajectory* _trajectory, double _startTime, const std::vector<int> &_dofs);
+ public:
+  Controller( dynamics::SkeletonDynamics* _skel,
+	      const std::vector<int> &_actuatedDofs,
+	      const Eigen::VectorXd &_Kp,
+	      const Eigen::VectorXd &_Kd,
+	      const std::vector<int> &_ankleDof,
+	      const Eigen::VectorXd &_Kp_Ankle,
+	      const Eigen::VectorXd &_Kd_Ankle );
 
-    // Returns zero torque for nonactuated DOFs
-    Eigen::VectorXd getTorques(const Eigen::VectorXd& _dof, const Eigen::VectorXd& _dofVel, double _time);
+  ~Controller();
+	   
+  void setWaypoints( std::vector<Eigen::VectorXd> _waypoints,
+		     const std::vector<int> &_dofs,
+		     const std::vector<double> &_nominalWaypointVelocities,
+		     double _startTime,
+		     double _dt );
+  
+  // Returns zero torque for non-actuated DOFs
+  Eigen::VectorXd getTorques( const Eigen::VectorXd &_dof,
+			      const Eigen::VectorXd &_dofVel,
+			      double _time );
 
-protected: 
-    Eigen::Vector3d evalAngMomentum(const Eigen::VectorXd& _dofVel);
-    Eigen::VectorXd adjustAngMomentum(Eigen::VectorXd _deltaMomentum, Eigen::VectorXd _controlledAxis);
+ protected:
+  Eigen::Vector3d evalAngMomentum( const Eigen::VectorXd &_dofVel );
+  Eigen::VectorXd adjustAngMomentum( Eigen::VectorXd _deltaMomentum,
+				     Eigen::VectorXd _controlledAxis );
 
-    dynamics::SkeletonDynamics* mSkel;
-    std::vector<int> mTrajectoryDofs;
-    Eigen::VectorXd mDesiredDofs;
-    Eigen::MatrixXd mKp;
-    Eigen::MatrixXd mKd;
-    Eigen::MatrixXd mSelectionMatrix;
-    const Trajectory* mTrajectory;
-    double mStartTime;
-    double mPreOffset;
-    std::vector<int> mAnkleDofs;
-    Eigen::VectorXd mAnklePGains;
-    Eigen::VectorXd mAnkleDGains;
+  dynamics::SkeletonDynamics *mSkel;
+  std::vector<int> mWaypointDofs;
+  std::vector<Eigen::VectorXd> mWaypoints;
+  int mNumWaypoints;
+  std::vector<double> mNominalWaypointVelocities;
+
+  Eigen::VectorXd mDesiredDofs;
+  Eigen::MatrixXd mKp;
+  Eigen::MatrixXd mKd;
+  Eigen::MatrixXd mSelectionMatrix;
+
+  double mStartTime;
+  double mdt;
+
+  double mPreOffset;
+  std::vector<int> mAnkleDofs;
+  Eigen::VectorXd mKp_Ankle;
+  Eigen::VectorXd mKd_Ankle;
 };
-
-}
