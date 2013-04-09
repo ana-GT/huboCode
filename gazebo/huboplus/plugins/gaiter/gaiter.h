@@ -11,9 +11,10 @@
 #include <controls/controlBundle.h>
 
 typedef enum {
-  RISE_UP,
-  RISE_LEFT,
-  RISE_RIGHT,
+  RAISE_UP,
+  SWING,
+  RAISE_LEFT,
+  RAISE_RIGHT,
   NO_STARTED,
   FAILURE,
   END
@@ -39,6 +40,10 @@ class gaiter {
   // Raise Up
   void run_RaiseUp( double _currentTime, double _dt  );
   void init_RaiseUp( double _startTime );
+
+  // Swing
+  void run_Swing( double _currentTime, double _dt  );
+  void init_Swing( double _startTime );
 
   // Raise Left
   void run_RaiseLeft( double _currentTime, double _dt  );
