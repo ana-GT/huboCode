@@ -19,30 +19,10 @@ int main ( int argc, char* argv[] ) {
   pz.calculateControllerGains();
   pz.printMatrices();
 
-  
+  pz.generateSteps( 6.0, 1.0, 0.15, 0.3 );
+  pz.printPlottingData();
 
   return 0;
 
 }
 
-/**
- * @function generateSteps 
- */
-void generateSteps( double _totalTime,
-		    double _stepTime,
-		    double _dt,
-		    double _stepDistance,
-		    std::vector<double> _px,
-		    std::vector<double> _py ) {
-  
-  int numSteps = _totalTime / _stepTime;
-
-  _px.resize( 0 );
-  _py.resize( 0 );
-
-  for( int i = 0; i < numSteps; ++i ) {
-    
-    _px[0] = _stepDistance*step;
-  }
-
-}
