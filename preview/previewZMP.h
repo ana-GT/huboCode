@@ -23,6 +23,8 @@ class previewZMP {
 
   void setLQIGains();
   void calculateControllerGains();
+  void runController();
+
   void printMatrices();
 
   void generateSteps( double _totalTime,
@@ -35,6 +37,11 @@ class previewZMP {
   // Dynamics
   double mdt;
   double mG;
+
+  // Step info
+  double mStepTime;
+  double mStepDistance;
+  double mFootSeparation;
 
   Eigen::MatrixXd mA;
   Eigen::MatrixXd mB;
@@ -49,21 +56,25 @@ class previewZMP {
   // Controller helpers
   Eigen::MatrixXd m_A;
   Eigen::MatrixXd m_B;
-  Eigen::MatrixXd m_C;
 
   Eigen::MatrixXd m_Q;
-  Eigen::MatrixXd m_P;
-  Eigen::MatrixXd m_K;
-  Eigen::MatrixXd m_Ac;
+  Eigen::MatrixXd m_I;
+  Eigen::MatrixXd mW;
+  Eigen::MatrixXd mK;
+  Eigen::MatrixXd mG1;
+  Eigen::MatrixXd mG2;
+
 
   // Preview gain calculation
-  std::vector<Eigen::MatrixXd> mGi;
-  Eigen::MatrixXd mKe;
-  Eigen::MatrixXd mKx;
+  std::vector<Eigen::MatrixXd> mG3;
 
   // ZMP Steps
-  std::vector<double> mZMPx;
-  std::vector<double> mZMPy;
+  std::vector<Eigen::VectorXd> mZMP;
+
+  // Stored x, y and u
+  std::vector<Eigen::VectorXd> mX;
+  std::vector<Eigen::VectorXd> mY;
+  std::vector<Eigen::VectorXd> mU;
 
 };
 

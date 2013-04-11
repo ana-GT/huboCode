@@ -19,7 +19,8 @@ int main ( int argc, char* argv[] ) {
   pz.calculateControllerGains();
   pz.printMatrices();
 
-  pz.generateSteps( 6.0, 1.0, 0.15, 0.3 );
+  pz.generateSteps( 10.0, 1.0, 0.15, 0.3 );
+  pz.runController();
   pz.printPlottingData();
 
   return 0;

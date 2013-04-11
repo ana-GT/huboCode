@@ -1,0 +1,5 @@
+set grid 
+ plot "xyu.txt" using 1:2 with lines title "CoM (x)", "xyu.txt" using 1:4 with lines title "ZMP(x)", "zmp.txt" using 1:2 with lines title "desired ZMP(x)"
+
+set grid 
+ plot "xyu.txt" using 1:3 with lines title "CoM (y)", "xyu.txt" using 1:5 with lines title "ZMP(y)", "zmp.txt" using 1:3 with lines title "desired ZMP(y)"
