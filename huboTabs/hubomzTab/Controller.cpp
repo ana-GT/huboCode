@@ -73,15 +73,15 @@ VectorXd Controller::getTorques(const VectorXd& _dof, const VectorXd& _dofVel, d
     torques = p + d - mKd * qddot * mTimestep;
 
     // ankle strategy for sagital plane
-    Vector3d com = mSkel->getWorldCOM();
-    double cop = 0.0;
-    double offset = com[0] - cop;
+    // Vector3d com = mSkel->getWorldCOM();
+    // double cop = 0.0;
+    // double offset = com[0] - cop;
 
-    for(unsigned int i = 0; i < mAnkleDofs.size(); i++) {
-        torques[mAnkleDofs[i]] = - mAnklePGains[i] * offset - mAnkleDGains[i] * (offset - mPreOffset) / mTimestep;
-    }
+    // for(unsigned int i = 0; i < mAnkleDofs.size(); i++) {
+    //     torques[mAnkleDofs[i]] = - mAnklePGains[i] * offset - mAnkleDGains[i] * (offset - mPreOffset) / mTimestep;
+    // }
 
-    mPreOffset = offset;
+    // mPreOffset = offset;
 
     return mSelectionMatrix * torques;
 }

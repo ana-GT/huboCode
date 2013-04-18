@@ -381,9 +381,9 @@ void planningTab::onButtonPlan(wxCommandEvent & _evt) {
   double foot_liftoff_z = 0.05; // foot liftoff height
 
   double step_length = 0.05;
-  bool walk_sideways = false;
+  bool walk_sideways = true;
 
-  double com_height = 0.48; // height of COM above ANKLE
+  double com_height = 0.52; // height of COM above ANKLE
   double com_ik_ascl = 0;
 
   double zmpoff_y = 0; // lateral displacement between zmp and ankle
@@ -396,11 +396,12 @@ void planningTab::onButtonPlan(wxCommandEvent & _evt) {
   double double_support_time = 0.05;
   double single_support_time = 0.70;
 
-  size_t max_step_count = 4;
+  size_t max_step_count = 16;
 
   double zmp_jerk_penalty = 1e-8; // jerk penalty on ZMP controller
 
-  ZMPWalkGenerator::ik_error_sensitivity ik_sense = ZMPWalkGenerator::ik_strict;
+  // ZMPWalkGenerator::ik_error_sensitivity ik_sense = ZMPWalkGenerator::ik_strict;
+  ZMPWalkGenerator::ik_error_sensitivity ik_sense = ZMPWalkGenerator::ik_sloppy;
 
 
   const char* hubofile = "../myhubo.kinbody.xml";
@@ -647,13 +648,46 @@ void planningTab::onButtonSetController(wxCommandEvent & _evt) {
   std::vector<int> actuatedDofs(mWorld->getRobot(mRobotIndex)->getNumDofs() - 6);
   for(unsigned int i = 0; i < actuatedDofs.size(); i++) {
     actuatedDofs[i] = i + 6;
+    if((i+6)<actuatedDofs.size()){
+//      std::cout<<"The robot index"<<i+6<<" corresponds to the dof: "<<mWorld->getRobot(mRobotIndex)->getDof(i+6)->getName()<<std::endl;
+    }
   }
   
   // Define PD controller gains
   Eigen::VectorXd kI = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
-  Eigen::VectorXd kP = 750.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs()); // 500
+  Eigen::VectorXd kP = 500.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs()); // 500
   Eigen::VectorXd kD = 100.0 * Eigen::VectorXd::Ones(mWorld->getRobot(mRobotIndex)->getNumDofs());
 
+//LHY RHY
+  kP(12)= 10000; 
+  kD(12)= 100;
+  kP(11)= 10000; 
+  kD(11)= 100;
+//LHR RHR
+  kP(16)= 20000; 
+  kD(16)= 100;
+  kP(15)= 20000; 
+  kD(15)= 100;
+//LHP RHP
+  kP(20)= 10000; 
+  kD(20)= 100;
+  kP(19)= 10000; 
+  kD(19)= 100;
+//LKP RKP
+ kP(23)= 6000; 
+  kD(23)= 100;
+  kP(24)= 6000; 
+  kD(24)= 100;
+//LAP RAP
+ kP(28)= 20000; 
+  kD(28)= 100;
+  kP(27)= 20000; 
+  kD(27)= 100;
+//LAR RAR
+ kP(32)= 20000; 
+  kD(32)= 100;
+  kP(31)= 20000; 
+  kD(31)= 100;
   // Define gains for the ankle PD
   std::vector<int> ankleDofs(2);
   ankleDofs[0] = 27;
@@ -664,7 +698,7 @@ void planningTab::onButtonSetController(wxCommandEvent & _evt) {
 
   // Put the robot near the floor (hacky, I know)
   Eigen::VectorXd rootPose = mWorld->getRobot( mRobotIndex )->getRootTransform();
-  rootPose(2) = 0.92; // z
+  rootPose(2) = 1.5; // z
   mWorld->getRobot( mRobotIndex )->setRootTransform( rootPose );
   
   // Set the robot to start configuration of waypoints
