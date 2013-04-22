@@ -1,0 +1,12 @@
+<launch>
+	<arg name="gzname" default="gazebo" />
+	<arg name="gzworld" default="$(find robotWalk)/worlds/atlas.world"/>
+	<param name="/use_sim_time" type="bool" value="true" />
+	
+	<!-- Start Gazebo with Atlas -->
+	<node name="gazebo" pkg="robotWalk" type="run_$(arg gzname)" args="$(arg gzworld)" output="screen" />
+	
+	<!-- Robot Description -->
+	<param name="robot_description" textfile="$(find atlas)/atlas.urdf" />	
+
+</launch>

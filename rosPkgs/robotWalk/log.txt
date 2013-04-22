@@ -1,0 +1,7 @@
+Saturday, April 20th
+Worked through the tutorials for DRC 2.0
+
+Sunday, April 21th
+Made the robot do 5 steps by using keyframes
+Started passing matlab code to CPP code
+Learned better how to create publishers / subscribers
