@@ -40,5 +40,9 @@ include_directories( /home/ana/Research/HUBO/vrc-golem/dart-atlas/src . )
 link_directories(${DART_LIBRARY_DIRS})
 link_directories(/home/ana/Research/HUBO/vrc-golem/dart-atlas/lib )
 
-add_executable( joint_angles_generate joint_angles_generate.cpp )
-target_link_libraries( joint_angles_generate ${DART_LIBRARIES} ${DARTExt_LIBRARIES} dart_atlas )
+# Search all header and source files
+set ( zmp_src zmpUtilities.cpp )
+set ( zmp_hdr zmpUtilities.h )
+
+add_executable( generateTraj generateTraj.cpp ${zmp_src} ${zmp_hdr} )
+target_link_libraries( generateTraj ${DART_LIBRARIES} ${DARTExt_LIBRARIES} dart_atlas )

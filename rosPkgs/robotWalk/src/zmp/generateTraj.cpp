@@ -2,7 +2,7 @@
  * @file generateTraj.cpp
  */
 
-#include "utilities.h"
+#include "zmpUtilities.h"
 #include <stdio.h>
 
 /**
@@ -29,6 +29,8 @@ int main( int argc, char* argv[] ) {
 			   slopeTime,
 			   levelTime );
   zp.print( std::string("zmpxy.txt"), zp.mZMP );
+  zp.print( std::string("leftFoot.txt"), zp.mLeftFoot );
+  zp.print( std::string("rightFoot.txt"), zp.mRightFoot );
 
   zp.getControllerGains( Qe, R, zg, numPreviewSteps );
 
@@ -36,4 +38,6 @@ int main( int argc, char* argv[] ) {
   printf("No problem \n");
   zp.print( std::string("com.txt"), zp.mX );
   zp.print( std::string("zmpapprox.txt"), zp.mY );
+  
+  
 }

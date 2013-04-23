@@ -2,10 +2,28 @@
  * @file utilities.cpp
  * @brief Functions to calculate preview control stuff and foot print generation
  */
-#include "utilities.h"
+#include "zmpUtilities.h"
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
+#include <algorithm> // for fill
+
+
+// To use dart-atlas library
+#include <atlas/AtlasUtils.h>
+#include <utils/AtlasPaths.h>
+
+#include <robotics/parser/dart_parser/DartLoader.h>
+#include <robotics/World.h>
+#include <kinematics/Skeleton.h>
+#include <kinematics/Dof.h>
+#include <kinematics/BodyNode.h>
+#include <dynamics/SkeletonDynamics.h>
+
+#include <fstream>
+#include <string>
+
 
 /**
  * @function zmpUtilities
@@ -44,8 +62,11 @@ void zmpUtilities::generateZmpPositions( int _numSteps,
 					 const double &_levelTime,
 					 const int &_numWaitSteps ) {
   std::vector<double> temp;
-  double start; double end;
+  double start, end;
   int numSlopePts, numLevelPts;
+  int numTotalPts;
+  double leftFoot, rightFoot;
+  double supportFoot, swingFoot, tempFoot;
 
   //-- Prepare the vectors
   std::vector<double> zmpx, zmpy;
@@ -57,51 +78,156 @@ void zmpUtilities::generateZmpPositions( int _numSteps,
   
   numSlopePts = _slopeTime / mdt;
   numLevelPts = _levelTime / mdt;
+  numTotalPts = numSlopePts + numLevelPts;
+
+  std::vector<Eigen::VectorXd> lf( numTotalPts, Eigen::Vector3d() );
+  std::vector<Eigen::VectorXd> rf( numTotalPts, Eigen::Vector3d() );
+
+  leftFoot = mFootSeparation / 2.0;
+  rightFoot = -1*mFootSeparation / 2.0;
+
   
-  //-- Generate ZMP X component
-  for( unsigned int i = 0; i < _numSteps; ++i ) {
+  //-- Start
+  if( _startLeftFoot == true ) {
+    supportFoot = rightFoot;
+    swingFoot = leftFoot;
+  }
+  else {
+    supportFoot = leftFoot;
+    swingFoot = rightFoot;
+  }
 
-    // Start at the center of both feet (double support)
-    if( i == 0 ) { start = i*mStepLength; end = i*mStepLength; } 
-    // Ends at the center of both feet (double support)
-    else if( i == _numSteps - 1 ) { start = (i-1)*mStepLength; end = (i-1)*mStepLength; }
-    // Normal walk is single support so keep changing feet
-    else { start = (i-1)*mStepLength; end = i*mStepLength;  }    
 
+  //-- First step
+  //** Generate ZMP x **
+  start = 0; end = (1 - 1)*mStepLength;
+  temp = generateSmoothPattern( start, end, numSlopePts, numLevelPts );
+  zmpx.insert( zmpx.end(), temp.begin(), temp.end() );
+
+  //** Generate ZMP y **
+  start = 0; end = supportFoot;
+  temp = generateSmoothPattern( start, end, numSlopePts, numLevelPts );
+  zmpy.insert( zmpy.end(), temp.begin(), temp.end() );
+
+  //** Generate foot placements **
+  if( supportFoot == leftFoot ) {
+    // Swing right
+    generateSwingPattern( rf, 
+			  0, 1*mStepLength,
+			  rightFoot, rightFoot,
+			  numTotalPts );
+    // Stay put left
+    Eigen::Vector3d p; p << (1-1)*mStepLength, leftFoot, 0;
+    std::fill( lf.begin(), lf.end(), p );
+  }
+  
+  else { 
+    // Swing left
+    generateSwingPattern( lf, 
+			  0, 1*mStepLength,
+			  leftFoot, leftFoot,
+			  numTotalPts );
+    // Stay put right
+    Eigen::Vector3d p; p << (1-1)*mStepLength, rightFoot, 0;
+    std::fill( rf.begin(), rf.end(), p );
+  }
+  
+  mRightFoot.insert( mRightFoot.end(), rf.begin(), rf.end() );
+  mLeftFoot.insert( mLeftFoot.end(), lf.begin(), lf.end() );
+  
+  
+  // Switch feet
+  tempFoot = supportFoot;
+  supportFoot = swingFoot;
+  swingFoot = tempFoot;
+
+  //-- From step 2 to (N -1)
+  for( unsigned int i = 2; i <= _numSteps - 1; ++i ) {
+
+    //** Generate ZMP x **
+    start = (i-2)*mStepLength; end = (i-1)*mStepLength;
     temp = generateSmoothPattern( start, end, numSlopePts, numLevelPts );
     zmpx.insert( zmpx.end(), temp.begin(), temp.end() );
 
-  } // for
-
-  //-- Generate ZMP Y component
-  double leftFoot = mFootSeparation / 2.0;
-  double rightFoot = -1*mFootSeparation / 2.0;
-  
-  double currentFoot; double nextFoot; double tempFoot;
-  
-  if( _startLeftFoot == true ) {
-    currentFoot = rightFoot;
-    nextFoot = leftFoot;
-  }
-
-  for( unsigned int i = 0; i < _numSteps; ++i ) {
-
-    // Start at the center of both feet (double support)
-    if( i == 0 ) { start = 0; end = nextFoot; } 
-    // Ends at the center of both feet (double support)
-    else if( i == _numSteps - 1 ) { start = currentFoot; end = 0; }
-    // Normal walk is single support so keep changing feet
-    else { start = currentFoot; end = nextFoot;   }    
-
+    //** Generate ZMP y **
+    start = swingFoot; end = supportFoot;
     temp = generateSmoothPattern( start, end, numSlopePts, numLevelPts );
     zmpy.insert( zmpy.end(), temp.begin(), temp.end() );
 
-    tempFoot = currentFoot;
-    currentFoot = nextFoot;
-    nextFoot = tempFoot;
-  } // end for
+    //** Generate foot placements **
+    if( supportFoot == leftFoot ) {
+      // Swing right
+      generateSwingPattern( rf, 
+			    (i-2)*mStepLength, i*mStepLength,
+			    rightFoot, rightFoot,
+			    numTotalPts );
+      // Stay put left
+      Eigen::Vector3d p; p << (i-1)*mStepLength, leftFoot, 0;
+      std::fill( lf.begin(), lf.end(), p );
+    }
+
+    else { 
+      // Swing left
+      generateSwingPattern( lf, 
+			    (i-2)*mStepLength, i*mStepLength,
+			    leftFoot, leftFoot,
+			    numTotalPts );
+      // Stay put right
+      Eigen::Vector3d p; p << (i-1)*mStepLength, rightFoot, 0;
+      std::fill( rf.begin(), rf.end(), p );
+    }
+
+    mRightFoot.insert( mRightFoot.end(), rf.begin(), rf.end() );
+    mLeftFoot.insert( mLeftFoot.end(), lf.begin(), lf.end() );
     
-  // Store
+
+    // Switch feet
+    tempFoot = supportFoot;
+    supportFoot = swingFoot;
+    swingFoot = tempFoot;
+  } 
+
+  //-- Last step
+  // ** Generate ZMP x **
+  start = (_numSteps - 2)*mStepLength; end = (_numSteps - 1)*mStepLength;
+  temp = generateSmoothPattern( start, end, numSlopePts, numLevelPts );
+  zmpx.insert( zmpx.end(), temp.begin(), temp.end() );
+
+  // ** Generate ZMP y **
+  start = swingFoot; end = 0;
+  temp = generateSmoothPattern( start, end, numSlopePts, numLevelPts );
+  zmpy.insert( zmpy.end(), temp.begin(), temp.end() );
+
+  //** Generate foot placements **
+  if( supportFoot == leftFoot ) {
+    // Swing right
+    generateSwingPattern( rf, 
+			  (_numSteps-2)*mStepLength, (_numSteps-1)*mStepLength,
+			  rightFoot, rightFoot,
+			  numTotalPts );
+    // Stay put left
+    Eigen::Vector3d p; p << (_numSteps-1)*mStepLength, leftFoot, 0;
+    std::fill( lf.begin(), lf.end(), p );
+  }
+  
+  else { 
+    // Swing left
+    generateSwingPattern( lf, 
+			  (_numSteps-2)*mStepLength, (_numSteps-1)*mStepLength,
+			  leftFoot, leftFoot,
+			  numTotalPts );
+    // Stay put right
+    Eigen::Vector3d p; p << (_numSteps-1)*mStepLength, rightFoot, 0;
+    std::fill( rf.begin(), rf.end(), p );
+  }
+  
+  mRightFoot.insert( mRightFoot.end(), rf.begin(), rf.end() );
+  mLeftFoot.insert( mLeftFoot.end(), lf.begin(), lf.end() );
+  
+  // No need to switch feet
+  
+  
+  //-- Store
   mZMP.resize(0);
   Eigen::MatrixXd zmp(2,1);
   for( int i = 0; i < zmpy.size(); ++i ) {
@@ -349,6 +475,79 @@ void zmpUtilities::generateCOMPositions( ) {
   }
 }
 
+/**
+ * @functio generateSwingPattern
+ */
+void zmpUtilities::generateSwingPattern( std::vector<Eigen::VectorXd> &_footPos,
+					 const double &_x0, const double &_xf,
+					 const double &_y0, const double &_yf,
+					 const int &_numPts ) {
+  // Reset container
+  _footPos.resize(0);
+
+  double dx, dy;
+  double t0, tf;
+  double dt, t;
+  double alpha, cos_a, sin_a;
+  double l;
+  double a, b;
+
+  dx = _xf - _x0;
+  dy = _yf - _y0;
+  
+  //t0 = 0;
+  //tf = 3.1416;
+  t0 = 3.1416;
+  tf = 0;
+
+  dt = ( tf - t0 ) / ( _numPts - 1 );
+  
+  t = t0;
+  alpha = atan2( dy, dx );
+  cos_a = cos( alpha );
+  sin_a = sin( alpha );
+  l = 0;
+
+  a = 0.5*sqrt( dx*dx + dy*dy );
+  b = a / 3.1416;
+
+  Eigen::Vector3d pos;
+  for( int i = 0; i < _numPts; ++i ) {
+    pos(0) = _x0 + l*cos_a;
+    pos(1) = _y0 + l*sin_a;
+//    pos(2) = b*sin( (3.1416/2.0)*(cos(t) + 1) );
+    pos(2) = b*sin( t );
+
+    t += dt;
+//    l = a*cos( (3.1416/2.0)*(cos(t) + 1) ) + a;
+	l = a*cos(t) + a;
+
+    _footPos.push_back( pos );
+  }
+
+	// Just to make sure we end fine
+	_footPos[_numPts-1](0) = _xf;
+	_footPos[_numPts-1](1) = _yf;
+	_footPos[_numPts-1] (2)= 0;
+  
+}
+
+/**
+ * @function prepareAtlasKinematics 
+ */
+atlas::AtlasKinematics* zmpUtilities::prepareAtlasKinematics() {
+
+  if( !mAtlasKin ) {
+    DartLoader dart_loader;
+    robotics::World *mWorld = dart_loader.parseWorld("atlas/atlas_world.urdf");
+    mAtlasSkel = mWorld->getSkeleton("atlas");
+    mAtlasKin = new atlas::AtlasKinematics();
+    mAtlasKin->init( mAtlasSkel );
+  }
+  mAtlasSkel->setPose( mAtlasSkel->getPose().setZero(), true );
+  return mAtlasKin;
+}
+
 
 /**
  * @function print
@@ -361,7 +560,11 @@ void zmpUtilities::print( const std::string &_name,
   pFile = fopen( _name.c_str(), "w" );
 
   for( int i = 0; i < _zmp.size(); ++i ) {
-    fprintf( pFile, "%d %f %f \n", i, _zmp[i](0,0), _zmp[i](1,0) );
+      fprintf( pFile, "%d ", i );    
+    for( int j = 0; j < _zmp[i].rows(); ++j ) {
+      fprintf( pFile, " %f ",  _zmp[i](j) );
+    }
+      fprintf( pFile, "\n" );
   }
 
   fclose( pFile );

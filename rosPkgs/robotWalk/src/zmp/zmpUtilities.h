@@ -12,6 +12,8 @@
 #include <vector>
 #include <string>
 
+#include <atlas/AtlasKinematics.h>
+
 
 /**
  * @class zmpUtilities
@@ -62,6 +64,14 @@ class zmpUtilities {
   /** generate CoM based on ZMP positions */
   void generateCOMPositions();
   
+  void generateSwingPattern( std::vector<Eigen::VectorXd> &_footPos,
+			     const double &_x0, const double &_xf,
+			     const double &_y0, const double &_yf,
+			     const int &_numPts );
+   
+  /** Prepare Atlas (what does this mean? */
+  atlas::AtlasKinematics* prepareAtlasKinematics(); 
+
   /** Print */
   void print( const std::string &_name,
 	      const std::vector<Eigen::VectorXd> &_zmp );
@@ -90,11 +100,17 @@ class zmpUtilities {
 
   // ZMP Steps
   std::vector<Eigen::VectorXd> mZMP;
+  std::vector<Eigen::VectorXd> mLeftFoot;
+  std::vector<Eigen::VectorXd> mRightFoot;
 
   // Stored x, y and u
   std::vector<Eigen::VectorXd> mX; /**< CoM (x,y)T */
   std::vector<Eigen::VectorXd> mY; /**< ZMP (from model) */
   std::vector<Eigen::VectorXd> mU;
+
+  // Atlas info
+  atlas::AtlasKinematics *mAtlasKin;
+  kinematics::Skeleton *mAtlasSkel;
 
 };
 
