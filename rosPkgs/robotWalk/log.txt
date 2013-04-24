@@ -5,3 +5,9 @@ Sunday, April 21th
 Made the robot do 5 steps by using keyframes
 Started passing matlab code to CPP code
 Learned better how to create publishers / subscribers
+
+Monday, April 22nd
+Finished passing everything to C++
+
+Tuesday, April 23rd
+Having the time of my life figuring out how to pass the joint commands to DRCSim

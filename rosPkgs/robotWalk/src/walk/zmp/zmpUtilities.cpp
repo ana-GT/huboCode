@@ -30,6 +30,48 @@
  * @brief Constructor
  */
 zmpUtilities::zmpUtilities() {
+  
+  mDofIndices.resize(0);
+
+
+  // Torso and neck
+  mDofIndices.push_back(6); // back_lbz
+  mDofIndices.push_back(9); // back_mby
+  mDofIndices.push_back(12); // back_ubx
+  mDofIndices.push_back(16); // neck_ay
+
+
+  // Left leg
+  mDofIndices.push_back(7);
+  mDofIndices.push_back(10);
+  mDofIndices.push_back(13);
+  mDofIndices.push_back(18);
+  mDofIndices.push_back(23);
+  mDofIndices.push_back(27);
+
+  // Right leg
+  mDofIndices.push_back(8);
+  mDofIndices.push_back(11);
+  mDofIndices.push_back(14);
+  mDofIndices.push_back(19);
+  mDofIndices.push_back(24);
+  mDofIndices.push_back(28);
+
+  // Left arm
+  mDofIndices.push_back(15);
+  mDofIndices.push_back(20);
+  mDofIndices.push_back(25);
+  mDofIndices.push_back(29);
+  mDofIndices.push_back(31);
+  mDofIndices.push_back(33);
+
+  // Right arm
+  mDofIndices.push_back(17);
+  mDofIndices.push_back(22);
+  mDofIndices.push_back(26);
+  mDofIndices.push_back(30);
+  mDofIndices.push_back(32);
+  mDofIndices.push_back(34);
 
 }
 
@@ -533,17 +575,199 @@ void zmpUtilities::generateSwingPattern( std::vector<Eigen::VectorXd> &_footPos,
 }
 
 /**
+ * @function getJointTrajectories 
+ */
+void zmpUtilities::getJointTrajectories() {
+  
+  /***************************
+   * DOF number in dart
+   ***************************/
+  int l[6], r[6];
+  l[0] = 7;  //= l_leg_uhz
+  l[1] = 10; //= l_leg_mhx
+  l[2] = 13; //= l_leg_lhy
+  l[3] = 18; //= l_leg_kny
+  l[4] = 23; //= l_leg_uay
+  l[5] = 27; //= l_leg_lax
+  
+  r[0] = 8;  //= r_leg_uhz
+  r[1] = 11; //= r_leg_mhx
+  r[2] = 14; //= r_leg_lhy
+  r[3] = 19; //= r_leg_kny
+  r[4] = 24; //= r_leg_uay
+  r[5] = 28; //= r_leg_lax
+  
+
+  /******************
+   * Declare and Init
+   ******************/
+   printf("Atlas Kin \n");
+  atlas::AtlasKinematics *AK = prepareAtlasKinematics();
+  
+  int nDofsNum = mAtlasSkel->getNumDofs();
+  Eigen::VectorXd dofs(nDofsNum);
+  dofs.setZero();
+printf("Num 	DOFs: %d \n", dofs.size() );
+  dofs(6) = 0;
+  dofs(9) = 0.0017;
+  dofs(12) = 0; 
+  dofs(16) = 0.781;
+
+  // Left Leg
+  dofs(7) = -0.0021;
+  dofs(10) = 0.0623;
+  dofs(13) = -0.2654;
+  dofs(18) = 0.4837; 
+  dofs(23) = -0.2012; 
+  dofs(27) = -0.0623;
+  
+  // Right Leg
+  dofs(8) = 0.0021;
+  dofs(11) = -0.0623; 
+  dofs(14) = -0.2654; 
+  dofs(19) = 0.4835;
+  dofs(24) = -0.20122;
+  dofs(28) = 0.0623;
+    
+  // Left Arm
+  dofs(15) = 0.2978;
+  dofs(20) = -1.3140;
+  dofs(25) = 2.0021;
+  dofs(29) = 0.4955;
+  dofs(31) = 0; 
+  dofs(33) = -0.01;
+  
+  // Right Arm
+  dofs(17) = 0.2978;
+  dofs(22) = 1.3140;
+  dofs(26) = 2.0021;
+  dofs(30) = -0.4955; 
+  dofs(32) = 0;
+  dofs(34) = 0.01;
+  
+  std::cout << "before set: " << dofs << std::endl;
+  mAtlasSkel->setPose(dofs, true, false);
+  dofs = mAtlasSkel->getPose();
+  std::cout << "after set: " << dofs << std::endl;
+
+  
+  std::cout << "left foot: \n" << mAtlasSkel->getNode("l_foot")->getWorldTransform() << std::endl;
+  std::cout << "right foot: \n" << mAtlasSkel->getNode("r_foot")->getWorldTransform() << std::endl;
+  
+  Eigen::Vector3d com, comStart;
+  comStart = com = mAtlasSkel->getWorldCOM();
+  std::cout << "com: " << comStart << std::endl;
+  
+  Eigen::Matrix4d Twb;
+  Twb.setIdentity();
+  
+  
+  Eigen::Vector6d lleg_angle, rleg_angle;
+  for (int i = 0; i < 6; i++) {
+    rleg_angle(i) = dofs(r[i]);
+    lleg_angle(i) = dofs(l[i]);
+  }
+  
+  Eigen::Matrix4d TwlStart = AK->legFK(lleg_angle, true);
+  //	TwlStart.col(3) = _atlas->getNode("l_foot")->getWorldTransform().col(3);
+  Eigen::Matrix4d TwrStart = AK->legFK(rleg_angle, false);
+  //	TwrStart.col(3) = _atlas->getNode("r_foot")->getWorldTransform().col(3);
+  
+  Eigen::Matrix4d Tm[atlas::NUM_MANIPULATORS];
+  Tm[atlas::MANIP_L_FOOT] = TwlStart;
+  Tm[atlas::MANIP_R_FOOT] = TwrStart;
+  
+  atlas::IK_Mode mode[atlas::NUM_MANIPULATORS];
+  mode[atlas::MANIP_L_FOOT] = atlas::IK_MODE_SUPPORT;
+  mode[atlas::MANIP_R_FOOT] = atlas::IK_MODE_WORLD;
+  mode[atlas::MANIP_L_HAND] = atlas::IK_MODE_FIXED;
+  mode[atlas::MANIP_R_HAND] = atlas::IK_MODE_FIXED;
+  
+  std::cout << "com: " << comStart << std::endl;
+  std:: cout << "TwlStart: " << TwlStart << std::endl;
+  std::cout << "TwrStart: " << TwrStart << std::endl;
+  
+  /********************************
+   * Generate sequence of joints 
+   **********************************/
+  mLeftLeg.resize(0);
+  mRightLeg.resize(0);
+
+  for( int i = 0; i < mX.size(); ++i ) {
+
+    /*************************
+     * comIK
+     ************************/
+    /*      
+    std::cout << "currentCom: \n" << com.transpose() << endl;
+    std::cout << "currentLeft: \n" << Tm[MANIP_L_FOOT] << endl;
+    std::cout << "currentRight: \n" << Tm[MANIP_R_FOOT] << endl;
+    std::cout << "currentTwb: \n" << Twb << endl;
+    */
+    Tm[atlas::MANIP_L_FOOT] = TwlStart;
+    Tm[atlas::MANIP_L_FOOT](0, 3) += mLeftFoot[i](0); // Left Foot X
+    Tm[atlas::MANIP_L_FOOT](2, 3) += mLeftFoot[i](2); // Left Foot Z
+    
+    Tm[atlas::MANIP_R_FOOT] = TwrStart;
+    Tm[atlas::MANIP_R_FOOT](0, 3) += mRightFoot[i](0); // Right Foot X
+    Tm[atlas::MANIP_R_FOOT](2, 3) += mRightFoot[i](2); // Right Foot Z
+    
+    com = comStart;
+    com(0) += mX[i](0); // CoM X
+    com(1) += mX[i](1); // CoM Y
+    /*
+    cout << "desiredCom: \n" << com.transpose() << endl;
+    cout << "desiredLeft: \n" << Tm[MANIP_L_FOOT] << endl;
+    cout << "desiredRight: \n" << Tm[MANIP_R_FOOT] << endl;
+    */
+
+    if (AK->comIK( mAtlasSkel, com, Twb, mode, Tm, dofs) != true) {
+      std::cout << "comIK failed!" << std::endl;
+      exit(1);
+    }
+    else { 
+      //std::cout << "comIK success" << std::endl;
+    }
+
+    // Store
+    dofs = mAtlasSkel->getPose();
+
+    Eigen::Vector6d lleg;
+    Eigen::Vector6d rleg;
+
+    for (int i = 0; i < 6; i++) {
+      lleg(i) = dofs(l[i]);
+      rleg(i) = dofs(r[i]);
+    }
+
+    mLeftLeg.push_back( lleg );
+    mRightLeg.push_back( rleg );
+
+    Eigen::VectorXd wholePose( mDofIndices.size() );
+    for( int i = 0; i < mDofIndices.size(); ++i ) {
+      wholePose[i] = dofs( mDofIndices[i] );
+    }
+    mWholeBody.push_back( wholePose );
+
+
+  }
+	
+}
+
+/**
  * @function prepareAtlasKinematics 
  */
 atlas::AtlasKinematics* zmpUtilities::prepareAtlasKinematics() {
 
-  if( !mAtlasKin ) {
     DartLoader dart_loader;
-    robotics::World *mWorld = dart_loader.parseWorld("atlas/atlas_world.urdf");
+   printf("Loading skel \n");
+    robotics::World *mWorld = dart_loader.parseWorld("/home/ana/Research/HUBO/huboCode/rosPkgs/robotWalk/src/walk/zmp/atlas/atlas_world.urdf");
+	printf("End loading skel \n");
     mAtlasSkel = mWorld->getSkeleton("atlas");
     mAtlasKin = new atlas::AtlasKinematics();
     mAtlasKin->init( mAtlasSkel );
-  }
+
+
   mAtlasSkel->setPose( mAtlasSkel->getPose().setZero(), true );
   return mAtlasKin;
 }

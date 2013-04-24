@@ -1,0 +1,3 @@
+#!/bin/sh
+export GAZEBO_PLUGIN_PATH=`pwd`/lib:$GAZEBO_PLUGIN_PATH
+echo $GAZEBO_PLUGIN_PATH

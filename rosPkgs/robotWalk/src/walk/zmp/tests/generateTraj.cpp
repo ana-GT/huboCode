@@ -38,6 +38,9 @@ int main( int argc, char* argv[] ) {
   printf("No problem \n");
   zp.print( std::string("com.txt"), zp.mX );
   zp.print( std::string("zmpapprox.txt"), zp.mY );
+
+  zp.getJointTrajectories();
+  zp.print( std::string("leftLeg.txt"), zp.mLeftLeg );
   
   
 }

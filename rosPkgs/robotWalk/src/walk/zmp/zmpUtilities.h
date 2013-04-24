@@ -72,6 +72,8 @@ class zmpUtilities {
   /** Prepare Atlas (what does this mean? */
   atlas::AtlasKinematics* prepareAtlasKinematics(); 
 
+  void getJointTrajectories();
+
   /** Print */
   void print( const std::string &_name,
 	      const std::vector<Eigen::VectorXd> &_zmp );
@@ -103,6 +105,9 @@ class zmpUtilities {
   std::vector<Eigen::VectorXd> mLeftFoot;
   std::vector<Eigen::VectorXd> mRightFoot;
 
+  std::vector<int> mDofIndices;
+  std::vector<Eigen::VectorXd> mWholeBody;
+
   // Stored x, y and u
   std::vector<Eigen::VectorXd> mX; /**< CoM (x,y)T */
   std::vector<Eigen::VectorXd> mY; /**< ZMP (from model) */
@@ -111,6 +116,9 @@ class zmpUtilities {
   // Atlas info
   atlas::AtlasKinematics *mAtlasKin;
   kinematics::Skeleton *mAtlasSkel;
+
+  std::vector<Eigen::VectorXd> mLeftLeg;
+  std::vector<Eigen::VectorXd> mRightLeg;
 
 };
 

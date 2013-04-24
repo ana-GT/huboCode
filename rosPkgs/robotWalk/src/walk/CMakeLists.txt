@@ -1,8 +1,5 @@
-cmake_minimum_required (VERSION 2.8)
-
-project (convertJoints)
-
-
+#cmake_minimum_required (VERSION 2.8)
+#project (walkPlugin)
 
 ###############
 # Compile flags
@@ -27,7 +24,7 @@ set(CMAKE_DEBUG_POSTFIX "d")
 
 
 ###############
-# Link with DART and GRIP
+# Link with DART
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_INSTALL_PREFIX}/share/dart")
 
 find_package(DARTExt REQUIRED)
@@ -40,9 +37,6 @@ include_directories( /home/ana/Research/HUBO/vrc-golem/dart-atlas/src . )
 link_directories(${DART_LIBRARY_DIRS})
 link_directories(/home/ana/Research/HUBO/vrc-golem/dart-atlas/lib )
 
-# Search all header and source files
-set ( zmp_src zmpUtilities.cpp )
-set ( zmp_hdr zmpUtilities.h )
-
-add_executable( generateTraj generateTraj.cpp ${zmp_src} ${zmp_hdr} )
-target_link_libraries( generateTraj ${DART_LIBRARIES} ${DARTExt_LIBRARIES} dart_atlas )
+# Add plugin
+rosbuild_add_executable( walk  walk.cpp zmp/zmpUtilities.cpp )
+target_link_libraries( walk ${DART_LIBRARIES} ${DARTExt_LIBRARIES} dart_atlas )

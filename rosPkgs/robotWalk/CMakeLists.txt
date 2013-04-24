@@ -46,6 +46,6 @@ rosbuild_add_executable( publish_joint_command_fromTxt src/publish_joint_command
 rosbuild_add_executable( subscribe_jointStates_test src/subscribe_jointStates_test.cpp )
 rosbuild_add_executable( test_keyframes src/test_keyframes.cpp )
 
-
-
+# Walk
+add_subdirectory( src/walk )
 

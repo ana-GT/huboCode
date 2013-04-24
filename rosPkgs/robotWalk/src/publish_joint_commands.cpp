@@ -26,8 +26,11 @@ void SetJointStates( const sensor_msgs::JointState::ConstPtr &_js ) {
     
     // assigned sinusoidal joint angle targets
     for( unsigned int i = 0; i < jointcommands.name.size(); ++i ) {
-      jointcommands.position[i] = 3.2*sin( (ros::Time::now() - startTime).toSec() );
-      jointcommands.velocity[i] = 3.2*cos( (ros::Time::now() - startTime).toSec() );      
+      if( i == 16 ) {
+      jointcommands.position[i] = 0.5*sin( (ros::Time::now() - startTime).toSec() );
+      jointcommands.velocity[i] = 0.5*cos( (ros::Time::now() - startTime).toSec() );      
+   }
+     else { jointcommands.position[i] =0 ;}
     }
 
     pub_joint_commands_.publish( jointcommands );
@@ -78,7 +81,7 @@ int main( int argc, char** argv ) {
   jointcommands.name.push_back("atlas::r_leg_uay");
   jointcommands.name.push_back("atlas::r_leg_lax");
 
-  jointcommands.name.push_back("atlas::l_arm_usy");
+  jointcommands.name.push_back("atlas::l_arm_usy"); 
   jointcommands.name.push_back("atlas::l_arm_shx");
   jointcommands.name.push_back("atlas::l_arm_ely");
   jointcommands.name.push_back("atlas::l_arm_elx");
@@ -90,10 +93,10 @@ int main( int argc, char** argv ) {
   jointcommands.name.push_back("atlas::r_arm_ely");
   jointcommands.name.push_back("atlas::r_arm_elx");
   jointcommands.name.push_back("atlas::r_arm_uwy");
-  jointcommands.name.push_back("atlas::r_arm_mwx");
+  jointcommands.name.push_back("atlas::r_arm_mwx"); 
 
   unsigned int n = jointcommands.name.size();
-  jointcommands.position.resize(n);
+  jointcommands.position.resize(n); 
   jointcommands.velocity.resize(n);
   jointcommands.effort.resize(n);
   jointcommands.kp_position.resize(n);
@@ -116,7 +119,7 @@ int main( int argc, char** argv ) {
 
     rosnode->getParam("atlas_controller/gains/" + pieces[2] + "/i_clamp", jointcommands.i_effort_max[i] );
 
-
+      printf(" [%d] Kp: %f, Ki: %f Kd: %f, I_clamp min: %f  clamp max: %f\n", i, jointcommands.kp_position[i], jointcommands.ki_position[i], jointcommands.kd_position[i], jointcommands.i_effort_min[i], jointcommands.i_effort_max[i]);
     jointcommands.velocity[i] = 0;
     jointcommands.effort[i] = 0;
     jointcommands.kp_velocity[i] = 0;
