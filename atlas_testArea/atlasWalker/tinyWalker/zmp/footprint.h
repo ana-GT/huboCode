@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 #include "mzcommon/Transform3.h"
-#include "fakerave.h"
+#include "src/fakerave.h"
 
 using namespace std;
 using namespace fakerave;

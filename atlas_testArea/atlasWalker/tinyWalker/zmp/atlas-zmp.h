@@ -9,7 +9,7 @@
 #define _ATLAS_ZMP_H_
 
 #include <stdlib.h>
-#include <atlas_joint_count.h>
+#include <src/atlas_joint_count.h>
 
 /**
  * @enum stance_t

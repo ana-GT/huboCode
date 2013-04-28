@@ -1,7 +1,4 @@
-# CMakeLists.txt for hubomz
-cmake_minimum_required(VERSION 2.6)
-
-project(atlasZmp)
+# CMake for atlaszmp library
 
 # Include PkgConfig
 include(FindPkgConfig)
