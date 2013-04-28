@@ -11,13 +11,13 @@
 int main( int argc, char* argv[] ) {
 
   zmpUtilities zp;
-  double stepLength = 0.15;
+  double stepLength = 0.1;
   double footSeparation = 0.282;
   double stepDuration = 1.0;
   double slopeTime = 0.15;
   double levelTime = 0.85;
-  double dt = 0.01;
-  double zg = 0.84;
+  double dt = 0.001;
+  double zg = 0.8438;
   int numPreviewSteps = 2;
   double Qe = 1;
   double R = 0.000001;

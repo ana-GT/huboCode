@@ -735,17 +735,19 @@ printf("Num 	DOFs: %d \n", dofs.size() );
     Eigen::Vector6d lleg;
     Eigen::Vector6d rleg;
 
-    for (int i = 0; i < 6; i++) {
-      lleg(i) = dofs(l[i]);
-      rleg(i) = dofs(r[i]);
+    for (int j = 0; j < 6; j++) {
+      lleg(j) = dofs(l[j]);
+      rleg(j) = dofs(r[j]);
     }
 
     mLeftLeg.push_back( lleg );
     mRightLeg.push_back( rleg );
 
+
     Eigen::VectorXd wholePose( mDofIndices.size() );
-    for( int i = 0; i < mDofIndices.size(); ++i ) {
-      wholePose[i] = dofs( mDofIndices[i] );
+
+    for( int j = 0; j < mDofIndices.size(); ++j ) {
+      wholePose[j] = dofs( mDofIndices[j] );
     }
     mWholeBody.push_back( wholePose );
 
