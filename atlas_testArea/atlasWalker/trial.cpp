@@ -21,28 +21,28 @@ int main( int argc, char* argv[] ) {
   // Variables
   walktype walk_type = walk_canned;
   double walk_circle_radius = 5.0;
-  double walk_dist = 20.0;
+  double walk_dist = 2.0;
 
-  double foot_separation_y = 0.085;
+  double foot_separation_y = 0.141; // half of total separation
   double foot_liftoff_z = 0.05;
 
-  double step_length = 0.05;
+  double step_length = 0.30; // Total step 2X
   bool walk_sideways = false;
 
-  double com_height = 0.8;
+  double com_height = 0.8438;
   double com_ik_ascl = 0;
 
   
   double zmpoff_y = 0; // lateral displacement between zmp and ankle
   double zmpoff_x = 0;
 
-  double lookahead_time = 2.5; 
+  double lookahead_time = 2; 
   double startup_time = 1.0;
   double shutdown_time = 1.0;
-  double double_support_time = 0.05;
-  double single_support_time = 0.70;
+  double double_support_time = 0.15;
+  double single_support_time = 0.85;
 
-  size_t max_step_count = 4;
+  size_t max_step_count = 10;
   double zmp_jerk_penalty = 1e-8; // jerk penalty on ZMP controller
   
   ZMPWalkGenerator::ik_error_sensitivity ik_sense = ZMPWalkGenerator::ik_strict;
@@ -247,14 +247,14 @@ printf("Default \n");
 
   // Store
   FILE* zmpF; FILE* lfF; FILE* rfF;
-  lfF = fopen( "leftFoot.txt", "w" );
-  rfF = fopen( "rightFoot.txt", "w" );
-  zmpF = fopen( "zmp.txt", "w" );
+  lfF = fopen( "leftFootMatt.txt", "w" );
+  rfF = fopen( "rightFootMatt.txt", "w" );
+  zmpF = fopen( "zmpMatt.txt", "w" );
 
   for( int i = 0; i < walker.ref.size(); ++i ) {
     fprintf( zmpF, "%d %f %f \n", i, walker.ref[i].pX, walker.ref[i].pY );
-    fprintf( lfF, "%d %f %f \n", i, walker.ref[i].feet[0].matrix()(0,3), walker.ref[i].feet[0].matrix()(1,3) );
-    fprintf( rfF, "%d %f %f \n", i, walker.ref[i].feet[1].matrix()(0,3), walker.ref[i].feet[1].matrix()(1,3) );
+    fprintf( lfF, "%d %f %f %f \n", i, walker.ref[i].feet[0].matrix()(0,3), walker.ref[i].feet[0].matrix()(1,3), walker.ref[i].feet[0].matrix()(2,3)  );
+    fprintf( rfF, "%d %f %f %f \n", i, walker.ref[i].feet[1].matrix()(0,3), walker.ref[i].feet[1].matrix()(1,3), walker.ref[i].feet[1].matrix()(2,3)  );
   }
   
   fclose( lfF );
