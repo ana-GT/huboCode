@@ -29,7 +29,7 @@ int main( int argc, char* argv[] ) {
   count = 300;
   isLeft = false;
   
-  swing2Cycloids( x0, y0, theta0,
+  swingEllipse( x0, y0, theta0,
 		     x1, y1, theta1,
 		     count, isLeft,
 		     pos, yaw );
@@ -78,7 +78,7 @@ int main( int argc, char* argv[] ) {
   aFile = fopen( "acc.txt", "w" );
   double t = 0;
   for( int i = 0; i < count; ++i ) {
-    fprintf( pFile, "%f %f %f %f \n", pos[i][0], pos[i][1], pos[i][2], yaw[i] );
+    fprintf( pFile, "%d %f %f %f %f \n", i, pos[i][0], pos[i][1], pos[i][2], yaw[i] );
     fprintf( vFile, "%f %f %f %f %f \n", t, vel[i][0], vel[i][1], vel[i][2], vel[i][3] );
     fprintf( aFile, "%f %f %f %f %f \n", t, acc[i][0], acc[i][1], acc[i][2], acc[i][3] );
     t += dt;

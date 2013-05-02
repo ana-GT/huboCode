@@ -1,0 +1,16 @@
+<package>
+  <description brief="joint_animation_tutorial">
+
+     joint_animation_tutorial
+
+  </description>
+  <author>ana</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/joint_animation_tutorial</url>
+  <depend package="roscpp"/>
+  <depend package="trajectory_msgs"/>
+
+</package>
+
+
