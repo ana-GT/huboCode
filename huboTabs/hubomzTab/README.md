@@ -42,5 +42,5 @@ Run will generate a trajectory with 1000 waypoints and will store them in a text
 
 4. If you want to see the movement, press Next Step to advance 10 waypoints or Prev Step to go back 10 waypoints. You can change this by changing mPathDelta to another value in PlanningTab
 ToDo: Pass the movements to the  Timeline , make the movement w.r.t. the standing foot
-
+Alternatively, if you wish to test the controller gains, you may instead of pressing next step to see the trajectory, you may press the "Set Controller" button and then press play for the simulation to start running. Doing these will generate a trajectory that is fed to a controller on each timestep with tuned gains. The result should be a simulation of the robot attempting to walk in a completly open-loop system.
 
